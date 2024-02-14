@@ -3,6 +3,7 @@ import { supabase } from '../utils/supabaseClient';
 import PreferencesAccordion from '../components/settings/PreferencesAccordion';
 import AccountAccordion from '../components/settings/AccountAccordion';
 import { useQueryClient } from '@tanstack/react-query';
+import ChessAccountAccordion from '../components/settings/ChessAccountAccordion';
 
 export default function Settings() {
   const queryClient = useQueryClient();
@@ -15,7 +16,8 @@ export default function Settings() {
   return (
     <div>
       <h1>Settings</h1>
-      
+
+      <ChessAccountAccordion/>
       <PreferencesAccordion/>
       <AccountAccordion/>
 
