@@ -1,6 +1,6 @@
-import Toast from "@components/Toast";
-import SettingsContext from "@contexts/SettingsContext";
-import { ToastProvider } from "@contexts/ToastProvider";
+import Toast from "../components/Toast";
+import SettingsContext from "../contexts/SettingsContext";
+import { ToastProvider } from "../contexts/ToastProvider";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useContext } from "react";
 import { Outlet } from "react-router-dom";

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { supabase } from '@utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient';
 import { Box, Button, Container, TextField, Typography } from '@mui/material';
-import useToast from '@hooks/useToast';
+import useToast from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import useToast from "@hooks/useToast";
-import { supabase } from "@utils/supabaseClient";
+import useToast from "../../hooks/useToast";
+import { supabase } from "../../utils/supabaseClient";
 
 interface EditEmailDialogProps {
   open: boolean;

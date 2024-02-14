@@ -1,6 +1,6 @@
 import { Snackbar, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
-import useToast from "@hooks/useToast";
+import useToast from "../hooks/useToast";
 
 const Toast = () => {
   const { toast, setToast } = useToast();

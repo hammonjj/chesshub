@@ -1,6 +1,6 @@
-import useToast from "@hooks/useToast";
+import useToast from "../../hooks/useToast";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { supabase } from "@utils/supabaseClient";
+import { supabase } from "../../utils/supabaseClient";
 import { useState } from "react";
 
 interface ForgotPasswordDialogProps {

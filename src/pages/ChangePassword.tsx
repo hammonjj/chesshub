@@ -1,6 +1,6 @@
-import useToast from "@hooks/useToast";
+import useToast from "../hooks/useToast";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { supabase } from "@utils/supabaseClient";
+import { supabase } from "../utils/supabaseClient";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

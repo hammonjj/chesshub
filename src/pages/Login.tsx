@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient';
 import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
-import useToast from '@hooks/useToast';
-import ForgotPasswordDialog from '@components/Dialogs/ForgotPasswordDialog';
+import useToast from '../hooks/useToast';
+import ForgotPasswordDialog from '../components/dialogs/ForgotPasswordDialog';
 
 export default function Login() {
     const [email, setEmail] = useState('');

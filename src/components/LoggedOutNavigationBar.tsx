@@ -1,7 +1,7 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import { useState } from "react";
-import Login from "@pages/Login";
-import SignUp from "@pages/SignUp";
+import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 

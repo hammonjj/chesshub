@@ -1,11 +1,11 @@
 import { useState } from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary, Typography, IconButton, Button } from "@mui/material";
-import useUser from "@hooks/useUser";
+import useUser from "../../hooks/useUser";
 import EditIcon from '@mui/icons-material/Edit';
-import EditEmailDialog from "@components/Dialogs/EditEmailDialog";
-import { supabase } from "@utils/supabaseClient";
-import useToast from "@hooks/useToast";
+import EditEmailDialog from "../dialogs/EditEmailDialog";
+import { supabase } from "../../utils/supabaseClient";
+import useToast from "../../hooks/useToast";
 
 export default function AccountAccordion() {
   const user = useUser();
