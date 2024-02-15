@@ -8,7 +8,7 @@ import { supabase } from "../../utils/supabaseClient";
 import useToast from "../../hooks/useToast";
 
 export default function AccountAccordion() {
-  const user = useUser();
+  const { user } = useUser();
   const { showError, showSuccess } = useToast();
   const [expanded, setExpanded] = useState(false);
 

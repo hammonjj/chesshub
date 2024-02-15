@@ -11,7 +11,12 @@ https://api.chess.com/pub/player/shadogi/games/archives
 https://lichess.org/api/user/hammonjj
 https://lichess.org/api/user/hammonjj/activity
 https://lichess.org/api/games/user/hammonjj
+https://lichess.org/api/games/user/hammonjj?sort=dateDesc
+  - since=<epochtime>
 
+https://lichess.org/api#tag/Games/operation/apiGamesUser
+
+https://chess.wintrcat.uk/
 
 ## Tables
 GameData

@@ -1,12 +1,8 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Skeleton } from "@mui/material";
 import { Game } from "../../types";
 import { useEffect, useState } from "react";
 import TimeControlsTableRow from "./TimeControlsTableRow";
-
-interface TimeControlsTableProps {
-  games: Game[];
-}
+import useGames from "../../hooks/useGames";
 
 export interface AggregatedResult {
   variant: string;
@@ -25,12 +21,17 @@ interface PlatformDetail {
   losses: number;
 }
 
-export default function TimeControlsTable(props: TimeControlsTableProps) {
+export default function TimeControlsTable() {
+  const { games, isLoadingGames } = useGames();
   const [aggregatedResults, setAggregatedResults] = useState<AggregatedResult[]>([]);
 
   useEffect(() => {
-    setAggregatedResults(aggregateGames(props.games));
-  }, [props.games]);
+    if(games.length === 0) {
+      return;
+    }
+
+    setAggregatedResults(aggregateGames(games));
+  }, [games]);
 
   return (
     <TableContainer component={Paper}>
@@ -43,13 +44,16 @@ export default function TimeControlsTable(props: TimeControlsTableProps) {
             <TableCell align="right">Wins</TableCell>
             <TableCell align="right">Draws</TableCell>
             <TableCell align="right">Losses</TableCell>
+            <TableCell align="right">W/D/L</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {aggregatedResults.map((result) => (
-            <TimeControlsTableRow key={result.variant} row={result} />
-          ))}
-        </TableBody>
+        {isLoadingGames ? renderSkeleton() : (
+          <TableBody>
+            {aggregatedResults.map((result) => (
+              <TimeControlsTableRow key={result.variant} row={result} />
+            ))}
+          </TableBody>
+        )}
       </Table>
     </TableContainer>
   );
@@ -59,8 +63,9 @@ const aggregateGames = (games: Game[]): AggregatedResult[] => {
   const result: Record<string, AggregatedResult> = {};
 
   games.forEach((game) => {
-    if (!result[game.variant]) {
-      result[game.variant] = {
+    const variantKey = game.variant;
+    if (!result[variantKey]) {
+      result[variantKey] = {
         variant: game.variant,
         totalGames: 0,
         wins: 0,
@@ -69,28 +74,47 @@ const aggregateGames = (games: Game[]): AggregatedResult[] => {
         platforms: [],
       };
     }
-    const variantResult = result[game.variant];
-    variantResult.totalGames++;
-    let platformDetail = variantResult.platforms.find(p => p.platform === game.platform);
-    const gameResult = game.result.toLowerCase();
-    if (gameResult === 'wins') {
-      variantResult.wins++;
-      platformDetail!.wins++;
-    } else if (gameResult === 'draws') {
-      variantResult.draws++;
-      platformDetail!.draws++;
-    } else if (gameResult === 'losses') {
-      variantResult.losses++;
-      platformDetail!.losses++;
-    }
 
-    
+    const variantResult = result[variantKey];
+    variantResult.totalGames++;
+
+    // Initialize or update platform detail
+    let platformDetail = variantResult.platforms.find(p => p.platform === game.platform);
     if (!platformDetail) {
       platformDetail = { platform: game.platform, games: 0, wins: 0, draws: 0, losses: 0 };
       variantResult.platforms.push(platformDetail);
     }
     platformDetail.games++;
+
+    // Increment wins, draws, or losses
+    const gameResult = game.result.toLowerCase();
+    if (gameResult === 'win') {
+      variantResult.wins++;
+      platformDetail.wins++;
+    } else if (gameResult === 'draw') {
+      variantResult.draws++;
+      platformDetail.draws++;
+    } else if (gameResult === 'loss') {
+      variantResult.losses++;
+      platformDetail.losses++;
+    }
   });
 
   return Object.values(result);
 };
+
+const renderSkeleton = () => (
+  <TableBody>
+    {[...new Array(5)].map((_, index) => (
+      <TableRow key={index}>
+        <TableCell><Skeleton animation="wave" /></TableCell>
+        <TableCell><Skeleton animation="wave" /></TableCell>
+        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+        <TableCell align="right"><Skeleton animation="wave" /></TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+);

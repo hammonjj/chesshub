@@ -1,18 +1,58 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../utils/supabaseClient'
+import { useQuery } from '@tanstack/react-query';
 import { User } from '@supabase/supabase-js';
+import { supabase } from '../utils/supabaseClient';
+import { ExternalAccount, UserProfile } from '../types';
 
-export default function useUser() {
-    const [user, setUser] = useState<User | null>(null);
+interface UserData {
+user: User | null;
+userProfile: UserProfile | null;
+externalAccounts: ExternalAccount[];
+}
 
-    useEffect(() => {
-        async function getUserData() {
-            const userData = await supabase.auth.getUser();
-            setUser(userData.data.user);
-        }
+export default function useUser(){
+    const { data, isLoading, isError, error } = useQuery<UserData, Error>({
+        queryKey: ['userData'],
+        queryFn: fetchUserData,
+    });
 
-        getUserData();
-    }, []);
+    const user = data?.user ?? null;
+    const userProfile = data?.userProfile ?? null;
+    const externalAccounts = data?.externalAccounts ?? [];
 
-    return user;
+    return { user, userProfile, externalAccounts, isLoading, isError, error };
+}
+
+async function fetchUserData(): Promise<UserData> {
+    const userResponse = await supabase.auth.getUser();
+    if (!userResponse.data.user) {
+        throw new Error('User not found');
+    }
+
+    const { data: userProfileData, error: userProfileError } = await supabase
+        .from('User_Profiles')
+        .select('id, display_name')
+        .eq('user', userResponse.data.user.id)
+        .single();
+
+    if (userProfileError || !userProfileData) {
+        throw new Error('Failed to fetch user profile');
+    }
+
+    const { data: externalAccountsData, error: externalAccountsError } = await supabase
+        .from('ChessHub_ExternalAccounts')
+        .select('account, platform')
+        .eq('user_profile', userProfileData.id);
+
+    if (externalAccountsError || !externalAccountsData) {
+        throw new Error('Failed to fetch external accounts');
+    }
+
+    return {
+        user: userResponse.data.user,
+        userProfile: { id: userProfileData.id, displayName: userProfileData.display_name },
+        externalAccounts: externalAccountsData.map(account => ({
+            accountName: account.account,
+            platform: account.platform,
+        })),
+    };
 }

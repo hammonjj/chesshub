@@ -24,6 +24,7 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
         <TableCell align="right">{row.wins}</TableCell>
         <TableCell align="right">{row.draws}</TableCell>
         <TableCell align="right">{row.losses}</TableCell>
+        <TableCell align="right">{`${Math.floor((row.wins/row.totalGames)*100)}%/${Math.floor((row.draws/row.totalGames)*100)}%/${Math.floor((row.losses/row.totalGames)*100)}%`}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -40,6 +41,7 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
                     <TableCell align="right">Wins</TableCell>
                     <TableCell align="right">Draws</TableCell>
                     <TableCell align="right">Losses</TableCell>
+                    <TableCell align="right">W/D/L</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -50,6 +52,7 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
                       <TableCell align="right">{platformDetail.wins}</TableCell>
                       <TableCell align="right">{platformDetail.draws}</TableCell>
                       <TableCell align="right">{platformDetail.losses}</TableCell>
+                      <TableCell align="right">{`${Math.floor((row.wins/row.totalGames)*100)}%/${Math.floor((row.draws/row.totalGames)*100)}%/${Math.floor((row.losses/row.totalGames)*100)}%`}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
