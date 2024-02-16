@@ -14,7 +14,9 @@ export default function Analysis(props: AnalysisProps) {
   return (
     <>
       <div>Analysis</div>
-      <Chessboard position={game.fen()} />;
+      <div style={{height: "800px", width: "800px"}}>
+        <Chessboard position={game.fen()} />
+      </div>
     </>
   );
 }
