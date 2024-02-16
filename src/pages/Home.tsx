@@ -1,23 +1,21 @@
+import EloTable from "../components/tables/EloTable";
+import GameHistoryTable from "../components/tables/GameHistoryTable";
 import TimeControlsTable from "../components/tables/TimeControlsTable";
-import useGames from "../hooks/useGames";
 
 export default function Home() {
-  const { syncExternalAccountsToLocalDb } = useGames();
-
-  async function  handleRefetchClick() {
-    console.log("Refetching");
-    await syncExternalAccountsToLocalDb();
-  }
-
   return (
-    <div style={{marginBottom: "5rem"}}>
+    <div style={{marginBottom: "5rem", overflow: "hidden"}}>
       <h1>Home</h1>
-      <button onClick={handleRefetchClick}>Refetch</button>
-      <div>Time Controls</div>
-      <TimeControlsTable />
+      <div style={{ display: "flex", flexDirection: "row", marginBottom: "40px", width: '100%' }}>
+        <div style={{ flex: '8 1 0%', maxWidth: '73%', marginRight: "15px" }}> {/* Adjusted for spacing between tables */}
+          <TimeControlsTable />
+        </div>
+        <div style={{ flex: '2 1 0%', maxWidth: '27%' }}> {/* Prevents growing beyond 20% */}
+          <EloTable />
+        </div>
+      </div>
 
-      <div>Latest Games</div>
-      {/* Latest Games */}
+      <GameHistoryTable />
     </div>
   );
 }

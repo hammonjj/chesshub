@@ -17,17 +17,4 @@ https://lichess.org/api/games/user/hammonjj?sort=dateDesc
 https://lichess.org/api#tag/Games/operation/apiGamesUser
 
 https://chess.wintrcat.uk/
-
-## Tables
-GameData
-  - id
-  - pgn
-  - pieces
-  - result
-  - moves
-  - eco
-  - variant
-  - datetime
-  - link
-  - user_profile
-  - time control
+https://github.com/WintrCat/freechess/tree/master

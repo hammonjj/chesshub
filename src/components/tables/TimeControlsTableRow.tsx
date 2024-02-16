@@ -52,7 +52,7 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
                       <TableCell align="right">{platformDetail.wins}</TableCell>
                       <TableCell align="right">{platformDetail.draws}</TableCell>
                       <TableCell align="right">{platformDetail.losses}</TableCell>
-                      <TableCell align="right">{`${Math.floor((row.wins/row.totalGames)*100)}%/${Math.floor((row.draws/row.totalGames)*100)}%/${Math.floor((row.losses/row.totalGames)*100)}%`}</TableCell>
+                      <TableCell align="right">{`${Math.floor((platformDetail.wins/platformDetail.games)*100)}%/${Math.floor((platformDetail.draws/platformDetail.games)*100)}%/${Math.floor((platformDetail.losses/platformDetail.games)*100)}%`}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

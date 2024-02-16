@@ -8,3 +8,14 @@ html {
 *::after {
   box-sizing: inherit;
 }
+
+.tableWrapper {
+  display: block;
+  width: 100%;
+  overflow-x: auto; /* Allows table to be scrollable horizontally */
+}
+
+.tableFixed {
+  table-layout: fixed; /* Ensures table does not expand beyond its container */
+  width: 100%; /* Ensures table takes up the full width of its container */
+}

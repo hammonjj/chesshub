@@ -34,16 +34,16 @@ export default function TimeControlsTable() {
   }, [games]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible chess table">
+    <TableContainer component={Paper} className="tableWrapper">
+      <Table aria-label="collapsible chess table" className="tableFixed">
         <TableHead>
           <TableRow>
             <TableCell />
             <TableCell>Variant</TableCell>
-            <TableCell align="right">Total Games</TableCell>
-            <TableCell align="right">Wins</TableCell>
-            <TableCell align="right">Draws</TableCell>
-            <TableCell align="right">Losses</TableCell>
+            <TableCell align="right">Games</TableCell>
+            <TableCell align="right">W</TableCell>
+            <TableCell align="right">D</TableCell>
+            <TableCell align="right">L</TableCell>
             <TableCell align="right">W/D/L</TableCell>
           </TableRow>
         </TableHead>
@@ -105,7 +105,7 @@ const aggregateGames = (games: Game[]): AggregatedResult[] => {
 
 const renderSkeleton = () => (
   <TableBody>
-    {[...new Array(5)].map((_, index) => (
+    {[...new Array(3)].map((_, index) => (
       <TableRow key={index}>
         <TableCell><Skeleton animation="wave" /></TableCell>
         <TableCell><Skeleton animation="wave" /></TableCell>

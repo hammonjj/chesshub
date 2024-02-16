@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { convertKeysToUpperCamelCase } from '../utils/utils';
+import useUser from './useUser';
 
 interface ChessPerformance {
   rating: number;
@@ -33,8 +34,9 @@ interface PuzzleRushStats {
 }
 
 interface PlayerStats {
-  chessRapid: ChessVariantStats;
-  chessBlitz: ChessVariantStats;
+  chessBullet?: ChessVariantStats;
+  chessRapid?: ChessVariantStats;
+  chessBlitz?: ChessVariantStats;
   fide: number;
   tactics: TacticsStats;
   puzzleRush: PuzzleRushStats;
@@ -46,11 +48,14 @@ interface PlayerStatsQueryResult {
   error: Error | null;
 }
 
-const useChessDotComPlayerStats = (username: string): PlayerStatsQueryResult => {
+const useChessDotComPlayerStats = (): PlayerStatsQueryResult => {
+  const { isLoading: isUserDataLoading, externalAccounts } = useUser();
+  const chessComAccount = externalAccounts.find((account) => account.platform === 'chess.com');
   const { data, isLoading, error } = useQuery<PlayerStats, Error>({
-    queryKey: ['chessDotComPlayerStats', username],
-    queryFn: () => fetchPlayerStats(username),
+    queryKey: ['chessDotComPlayerStats', chessComAccount?.accountName],
+    queryFn: () => fetchPlayerStats(chessComAccount!.accountName),
     select: (data) => convertKeysToUpperCamelCase(data) as PlayerStats,
+    enabled: !isUserDataLoading && !!chessComAccount
   });
 
   return { data, isLoading, error };

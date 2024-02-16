@@ -3,6 +3,7 @@ import { ExternalAccount, Game } from "../types";
 import { supabase } from "../utils/supabaseClient";
 import useUser from "./useUser";
 import { fetchGamesArchive, fetchGameArchiveList, convertRawChessDotComGameToGame } from "../utils/chessDotCom";
+import { fetchLichessGames } from "../utils/lichess";
 
 export default function useGames() {
   const queryClient = useQueryClient();
@@ -19,15 +20,18 @@ export default function useGames() {
       return;
     }
 
+    const promises: Promise<void>[] = [];
     const chessComAccount = externalAccounts.find((account) => account.platform === 'chess.com');
     if (chessComAccount) { 
-      syncChessDotComGames(chessComAccount); 
+      promises.push(syncChessDotComGames(chessComAccount)); 
     }
 
     const lichessAccount = externalAccounts.find((account) => account.platform === 'lichess');
     if (lichessAccount) { 
-      syncLichessGames(lichessAccount); 
+      promises.push(syncLichessGames(lichessAccount)); 
     }
+
+    await Promise.all(promises);
   }
 
   async function syncChessDotComGames(chessComAccount: ExternalAccount) {
@@ -50,15 +54,14 @@ export default function useGames() {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, archiveYear, archiveMonth] = archiveDateMatches;
-        const archiveDate = new Date(`${archiveYear}-${archiveMonth}-01`);
+        const archiveDate = new Date(+archiveYear, +archiveMonth, 1);
 
         // Proceed if the archive is for the month of the most recent game or later.
         if (!mostRecentGameDate || archiveDate >= mostRecentGameDate) {
           const archiveGames = await fetchGamesArchive(archive.archivesUrl);
-
+          
           const gamesObjList = archiveGames.map(
             (rawGame) => convertRawChessDotComGameToGame(rawGame, chessComAccount.accountName, userProfile!.id));
-
           gamesToInsert = gamesToInsert.concat(gamesObjList);
         }
       }
@@ -66,8 +69,11 @@ export default function useGames() {
       gamesToInsert = gamesToInsert.filter((game) => !data?.some((existingGame) => existingGame.uuid === game.uuid));
 
       if (!gamesToInsert.length) {
-        console.log("No new games to insert");
+        console.log("No new Chess.com games to insert");
         return;
+      }
+      else {
+        console.log(`Found ${gamesToInsert} Chess.com games to insert`);
       }
 
       const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);
@@ -86,6 +92,32 @@ export default function useGames() {
 
   async function syncLichessGames(lichessAccount: ExternalAccount) {
     console.log("Syncing Lichess.com games to local database", lichessAccount);
+
+    const mostRecentGame = data?.find((game) => game.platform === "lichess");
+    if (!mostRecentGame) {
+      console.log("No Lichess games found in local data. Syncing all available archives.");
+    }
+    
+    const gamesToInsert = await fetchLichessGames(
+      lichessAccount.accountName, userProfile!.id, mostRecentGame?.playedAt);
+
+    if (!gamesToInsert.length) {
+      console.log("No new Lichess games to insert");
+      return;
+    }
+    else {
+      console.log(`Found ${gamesToInsert} Lichess games to insert`);
+    }
+
+    const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);
+
+    if(error) {
+      console.log("Error inserting games", error);
+      throw new Error('Failed to insert games');
+    }
+
+    //Will convert to mutation later
+    queryClient.invalidateQueries({ queryKey: ['games'] });
   }
 
   const games = data ?? [];

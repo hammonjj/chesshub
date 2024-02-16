@@ -26,5 +26,5 @@ export interface Game {
   eco: string;
   result: Result;
   platform: string;
-  uuid: string;
+  uuid?: string;
 }

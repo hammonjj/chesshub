@@ -1,40 +1,109 @@
-import { BottomNavigation, BottomNavigationAction, Fab, Paper } from "@mui/material";
-import Settings from "../pages/Settings";
-import { useState } from "react";
+import { useState } from 'react';
+import { Drawer, List, ListItemIcon, ListItemText, IconButton, Divider, Toolbar, AppBar, Typography, Box, ListItemButton } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import InsightsIcon from '@mui/icons-material/Insights';
 import SettingsIcon from '@mui/icons-material/Settings';
-import AddIcon from '@mui/icons-material/Add';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import { CircularProgress } from '@mui/material';
+
 import Home from "../pages/Home";
+import Settings from "../pages/Settings";
+import useGames from '../hooks/useGames';
+import Analysis from '../pages/Analysis';
+import { useNavigate } from 'react-router-dom';
+
+const drawerWidth = 240;
+const miniDrawerWidth = 56;
 
 export default function LoggedInNavigationBar() {
-  const [value, setValue] = useState(0);
+  const nav = useNavigate();
+  const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
+  const [open, setOpen] = useState(false);
+  const [fetchingExternalData, setFetchingExternalData] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  const pages = [
+    { text: 'Home', icon: <HomeIcon />, component: <Home />, route: "/" },
+    { text: 'Analysis', icon: <DeviceHubIcon />, component: <Analysis />, route: "/analysis"},
+    { text: 'Insights', icon: <InsightsIcon />, component: <div>Insights</div>, route: "/insights" },
+    { text: 'Settings', icon: <SettingsIcon />, component: <Settings />, route: "/settings" },
+  ];
+
+  async function  handleRefetchClick() {
+    console.log("Refetching");
+    setFetchingExternalData(true);
+    await syncExternalAccountsToLocalDb();
+    setFetchingExternalData(false);
+  }
 
   return (
-    <div style={{ position: 'relative' }}>
-      {value === 0 && <Home/>}
-      {/*value === 1 && <Data/>*/}
-      {value === 2 && <Settings/>}
-
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-        <Fab 
-          color="primary" 
-          aria-label="add"
-          style={{ position: 'absolute', bottom: 70, right: 16 }}>
-          <AddIcon />
-        </Fab>
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(_event, newValue) => {
-            setValue(newValue);
-          }}
-        >
-          <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-          <BottomNavigationAction label="Data" icon={<InsightsIcon />} />
-          <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
-        </BottomNavigation>
-      </Paper>
-    </div>
-  )
+    <Box sx={{ display: 'flex' }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        
+        <Toolbar style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+          <div style={{ display: "flex", flexDirection: "row"}}>
+            <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
+              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              Chess Hub
+            </Typography>
+          </div>
+          <button onClick={handleRefetchClick} disabled={fetchingExternalData || isLoadingGames}>
+            {fetchingExternalData ? (<CircularProgress size={16} />) : 'Refetch'}
+          </button>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: open ? drawerWidth : miniDrawerWidth,
+          flexShrink: 0,
+          whiteSpace: 'nowrap',
+          boxSizing: 'border-box',    
+          '& .MuiDrawer-paper': {
+            width: open ? drawerWidth : miniDrawerWidth,
+            transition: (theme) => theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+          },
+        }}
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          {pages.map((page) => (
+            <ListItemButton key={page.text} onClick={() => nav(page.route)} sx={{ 
+              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 1)' },
+              cursor: 'pointer'
+            }}>
+              <ListItemIcon >{page.icon}</ListItemIcon>
+              {open && <ListItemText primary={page.text} />}
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          
+          width: `calc(100% - ${open ? drawerWidth : miniDrawerWidth}px)`,
+        }}
+      >
+        <Toolbar /> {/* This empty Toolbar is needed to offset the content below the AppBar */}
+      </Box>
+    </Box>
+  );
 }
+
