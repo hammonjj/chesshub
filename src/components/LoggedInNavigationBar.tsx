@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Drawer, List, ListItemIcon, ListItemText, IconButton, Divider, Toolbar, AppBar, Typography, Box, ListItemButton } from "@mui/material";
+import { Drawer, List, ListItemIcon, ListItemText, Divider, Toolbar, AppBar, Typography, Box, ListItemButton } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import InsightsIcon from '@mui/icons-material/Insights';
 import SettingsIcon from '@mui/icons-material/Settings';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+// import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import { CircularProgress } from '@mui/material';
 
@@ -20,16 +20,16 @@ const miniDrawerWidth = 56;
 export default function LoggedInNavigationBar() {
   const nav = useNavigate();
   const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
-  const [open, setOpen] = useState(false);
+  const [open] = useState(false);
   const [fetchingExternalData, setFetchingExternalData] = useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // const handleDrawerOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  // const handleDrawerClose = () => {
+  //   setOpen(false);
+  // };
 
   const pages = [
     { text: 'Home', icon: <HomeIcon />, component: <Home />, route: "/" },
@@ -51,9 +51,9 @@ export default function LoggedInNavigationBar() {
         
         <Toolbar style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
           <div style={{ display: "flex", flexDirection: "row"}}>
-            <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
+            {/* <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
+            </IconButton> */}
             <Typography variant="h6" noWrap component="div">
               Chess Hub
             </Typography>

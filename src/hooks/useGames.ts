@@ -35,7 +35,7 @@ export default function useGames() {
   }
 
   async function syncChessDotComGames(chessComAccount: ExternalAccount) {
-    console.log("Syncing Chess.com games to local database", chessComAccount);
+    console.log("Syncing Chess.com games");
     const mostRecentChessComGame = data?.find((game) => game.platform === "chess.com");
     if (!mostRecentChessComGame) {
       console.log("No Chess.com games found in local data. Syncing all available archives.");
@@ -91,7 +91,7 @@ export default function useGames() {
   }
 
   async function syncLichessGames(lichessAccount: ExternalAccount) {
-    console.log("Syncing Lichess.com games to local database", lichessAccount);
+    console.log("Syncing Lichess games");
 
     const mostRecentGame = data?.find((game) => game.platform === "lichess");
     if (!mostRecentGame) {
@@ -106,7 +106,7 @@ export default function useGames() {
       return;
     }
     else {
-      console.log(`Found ${gamesToInsert} Lichess games to insert`);
+      console.log(`Found ${gamesToInsert.length} Lichess games to insert`);
     }
 
     const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);

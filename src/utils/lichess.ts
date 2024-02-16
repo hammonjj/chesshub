@@ -3,7 +3,7 @@ import { Game } from '../types';
 import { getGameObjectFromPgn } from './pgnUtils';
 
 export async function fetchLichessGames(username: string, userProfile: number, sinceDate: Date | null = null) {
-  const sinceString = sinceDate ? `?since=${sinceDate.getTime() + 10}` : '';
+  const sinceString = sinceDate ? `?since=${sinceDate.getTime() + (1000*60)}` : '';
   const response = await fetch(`https://lichess.org/api/games/user/${username}${sinceString}`);
 
   if (!response.ok) {
