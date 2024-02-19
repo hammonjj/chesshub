@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import ValidateAccount from './pages/ValidateAccount'
 import ChangePassword from './pages/ChangePassword'
 import Layout from './pages/Layout'
-import Analysis from './pages/Analysis'
+import Explorer from './pages/Explorer'
 import Settings from './pages/Settings'
 import Insights from './pages/Insights'
 import { AuthProvider } from './contexts/AuthContext'
@@ -33,7 +33,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                <Route path="analysis" element={<ProtectedRoute><Analysis /></ProtectedRoute>} />
+                <Route path="explorer" element={<ProtectedRoute><Explorer /></ProtectedRoute>} />
                 <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
                 <Route path="change-password" element={<ChangePassword />}/>

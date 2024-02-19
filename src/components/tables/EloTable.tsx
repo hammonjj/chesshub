@@ -14,7 +14,7 @@ export default function EloTable(_props: EloTableProps) {
 
   return (
    <TableContainer component={Paper} className="tableWrapper">
-      <Table aria-label="collapsible elo table" className="tableFixed">
+      <Table aria-label="collapsible elo table" className="tableFixed" size="small">
         <TableHead>
           <TableRow>
             <TableCell>Platform</TableCell>

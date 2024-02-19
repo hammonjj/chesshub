@@ -1,5 +1,5 @@
-import { ParseTree } from "@mliebelt/pgn-parser";
-import { Game, Variant } from "../types";
+import { ParseTree, parseGame } from "@mliebelt/pgn-parser";
+import { Game, GameStats, Pieces, Result, Variant } from "../types";
 
 export function getPlayerResult(pgn: ParseTree, pieces: string) {
   if (pgn.tags?.Result === "1-0") {
@@ -29,6 +29,116 @@ export function getGameObjectFromPgn(pgn: ParseTree, username: string, userProfi
     result: getPlayerResult(pgn, pieces),
     platform: "lichess"
   };
+}
+
+//Probably want to actually use a real library for this, but this will suffice for now
+export function findMatchingGamesByPgn(games: Game[], targetPgn: string): Game[] {
+  const parsedTargetPgn = parseGame(targetPgn);
+
+  return games.filter((game) => {
+    const parsedGamePgn = parseGame(game.pgn);
+    if(parsedGamePgn.moves.length < parsedTargetPgn.moves.length) {
+      return false;
+    }
+
+    for(let i = 0; i < parsedTargetPgn.moves.length; i++) {
+      if(parsedGamePgn.moves[i].notation.notation.toLowerCase() !== 
+        parsedTargetPgn.moves[i].notation.notation.toLowerCase()) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+}
+
+export function getWinLossDrawStats(games: Game[], pieces: Pieces): GameStats {
+  const stats = games.reduce((acc, game) => {
+    if(game.pieces !== pieces) {
+      return acc;
+    }
+
+    if(game.result === "Win") {
+      acc.wins++;
+    }
+    else if(game.result === "Loss") {
+      acc.losses++;
+    }
+    else {
+      acc.draws++;
+    }
+
+    return acc;
+  }, { wins: 0, losses: 0, draws: 0, total: games.length});
+
+  return stats;
+}
+
+export function applyGameFilters(
+  games: Game[], 
+  pieces: Pieces, 
+  variant: Variant  | "All", 
+  result: Result | "All", 
+  dateRange: string): Game[] {
+  return games.filter((game) => {
+    if(game.pieces !== pieces) {
+      return false;
+    }
+
+    if(!applyDateFilter(game, dateRange)) {
+      return false;
+    }
+
+    if(!applyVariantFilter(game, variant)) {
+      return false;
+    }
+
+    if(!applyResultFilter(game, result)) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+function applyDateFilter(game: Game, dateRange: string) {
+  if(dateRange === "all-time") {
+    return true;
+  }
+  if(dateRange === "this-week" && 
+    game.playedAt > new Date(new Date().setDate(new Date().getDate() - 7))) {
+    return true;
+  }
+  if(dateRange === "this-month" && 
+    game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 1))) {
+    return true;
+  }
+  if(dateRange === "last-three-months" && 
+    game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 3))) {
+    return true;
+  }
+  if(dateRange === "this-year" && 
+    game.playedAt > new Date(new Date().setFullYear(new Date().getFullYear() - 1))) {
+    return true;
+  }
+
+  return false;
+}
+
+function applyVariantFilter(game: Game, variant: Variant | "All") {
+  if(variant === "All") {
+    return true;
+  }
+
+  return game.variant === variant;
+}
+
+function applyResultFilter(game: Game, result: Result | "All") {
+  if(result === "All") {
+    return true;
+  }
+
+  return game.result === result;
 }
 
 function getVariantFromEvent(event: string) {

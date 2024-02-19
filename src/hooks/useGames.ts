@@ -73,7 +73,7 @@ export default function useGames() {
         return;
       }
       else {
-        console.log(`Found ${gamesToInsert} Chess.com games to insert`);
+        console.log(`Found ${gamesToInsert.length} Chess.com games to insert`);
       }
 
       const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);

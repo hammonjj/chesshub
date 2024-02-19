@@ -35,15 +35,15 @@ export default function TimeControlsTable() {
 
   return (
     <TableContainer component={Paper} className="tableWrapper">
-      <Table aria-label="collapsible chess table" className="tableFixed">
+      <Table aria-label="collapsible chess table" className="tableFixed" size="small">
         <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell>Variant</TableCell>
-            <TableCell align="right">Games</TableCell>
-            <TableCell align="right">W</TableCell>
-            <TableCell align="right">D</TableCell>
-            <TableCell align="right">L</TableCell>
+            <TableCell sx={{ whiteSpace: 'nowrap', width: '5%' }} />
+            <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}>Variant</TableCell>
+            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>Games</TableCell>
+            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>W</TableCell>
+            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>D</TableCell>
+            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>L</TableCell>
             <TableCell align="right">W/D/L</TableCell>
           </TableRow>
         </TableHead>

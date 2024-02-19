@@ -8,10 +8,22 @@ export interface UserProfile {
   displayName: string;
 }
 
-
+export const DefaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 export type Pieces = "White" | "Black";
-export type Variant = "Bullet" | "Blitz" | "Rapid" | "Classical" | "Correspondence" | "Antichess" | "Atomic" | "Crazyhouse" | "Horde" | "King of the Hill" | "Racing Kings" | "Three-check" | "Chess960" | "Standard" | "From Position";
-export type Result = "Win" | "Loss" | "Draw" | "Aborted" | "Stalemate" | "Insufficient material" | "50-move rule" | "Repetition" | "Timeout" | "Checkmate" | "Resignation" | "Time forfeit" | "Disconnection";
+
+export type Variant = "Bullet" | "Blitz" | "Rapid" | "Classical" | "Correspondence" | "Antichess" | 
+  "Atomic" | "Crazyhouse" | "Horde" | "King of the Hill" | "Racing Kings" | "Three-check" | 
+  "Chess960" | "Standard" | "From Position";
+
+export type Result = "Win" | "Loss" | "Draw" | "Aborted" | "Stalemate" | "Insufficient material" | 
+  "50-move rule" | "Repetition" | "Timeout" | "Checkmate" | "Resignation" | "Time forfeit" | "Disconnection";
+
+export interface GameStats {
+  wins: number;
+  losses: number;
+  draws: number;
+  total: number;
+}
 
 export interface Game {
   id?: number;

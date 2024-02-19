@@ -26,7 +26,7 @@ export default function GameHistoryTable(_props: GameHistoryTableProps) {
 
   return (
     <TableContainer component={Paper}>
-      <Table aria-label="collapsible chess table">
+      <Table aria-label="collapsible chess table" size="small">
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>

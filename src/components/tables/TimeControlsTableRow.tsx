@@ -3,6 +3,7 @@ import { AggregatedResult } from "./TimeControlsTable";
 import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import StatsBar from "../StatsBar";
 
 interface TimeControlsTableRow {
   row: AggregatedResult;
@@ -10,7 +11,8 @@ interface TimeControlsTableRow {
 
 const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
   const [open, setOpen] = useState(false);
-
+  const padding = "16px";
+  
   return (
     <>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -20,11 +22,18 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">{row.variant}</TableCell>
-        <TableCell align="right">{row.totalGames}</TableCell>
-        <TableCell align="right">{row.wins}</TableCell>
-        <TableCell align="right">{row.draws}</TableCell>
-        <TableCell align="right">{row.losses}</TableCell>
-        <TableCell align="right">{`${Math.floor((row.wins/row.totalGames)*100)}%/${Math.floor((row.draws/row.totalGames)*100)}%/${Math.floor((row.losses/row.totalGames)*100)}%`}</TableCell>
+        <TableCell align="right" style={{ padding: padding }}>{row.totalGames}</TableCell>
+        <TableCell align="right" style={{ padding: padding }}>{row.wins}</TableCell>
+        <TableCell align="right" style={{ padding: padding }}>{row.draws}</TableCell>
+        <TableCell align="right" style={{ padding: padding }}>{row.losses}</TableCell>
+        <TableCell>
+          <StatsBar stats={{ 
+            wins: row.wins, 
+            losses: row.losses, 
+            draws: row.draws, 
+            total: row.totalGames }} 
+            exclude={0}/>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -53,6 +62,15 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
                       <TableCell align="right">{platformDetail.draws}</TableCell>
                       <TableCell align="right">{platformDetail.losses}</TableCell>
                       <TableCell align="right">{`${Math.floor((platformDetail.wins/platformDetail.games)*100)}%/${Math.floor((platformDetail.draws/platformDetail.games)*100)}%/${Math.floor((platformDetail.losses/platformDetail.games)*100)}%`}</TableCell>
+                      {/* <TableCell>
+                        <StatsBar stats={{ 
+                          wins: platformDetail.wins, 
+                          losses: platformDetail.losses, 
+                          draws: platformDetail.draws, 
+                          total: platformDetail.games 
+                          }} 
+                          exclude={0}/>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

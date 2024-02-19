@@ -11,7 +11,7 @@ import { CircularProgress } from '@mui/material';
 import Home from "../pages/Home";
 import Settings from "../pages/Settings";
 import useGames from '../hooks/useGames';
-import Analysis from '../pages/Analysis';
+import Explorer from '../pages/Explorer';
 import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -33,7 +33,7 @@ export default function LoggedInNavigationBar() {
 
   const pages = [
     { text: 'Home', icon: <HomeIcon />, component: <Home />, route: "/" },
-    { text: 'Analysis', icon: <DeviceHubIcon />, component: <Analysis />, route: "/analysis"},
+    { text: 'Explorer', icon: <DeviceHubIcon />, component: <Explorer />, route: "/explorer"},
     { text: 'Insights', icon: <InsightsIcon />, component: <div>Insights</div>, route: "/insights" },
     { text: 'Settings', icon: <SettingsIcon />, component: <Settings />, route: "/settings" },
   ];
