@@ -88,26 +88,27 @@ export default function Explorer() {
   
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={8}>
+      <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
         <Chessboard 
           position={fen} 
           onPieceDrop={onPieceDrop}
           boardOrientation={state.flipBoard ? 'black' : 'white'} />
       </Grid>
-      <Grid item xs={12} md={4}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
+      <Grid item xs={12} md={4} order={{ xs: 1, md: 2 }}>
+        <Grid container direction="column">
           <Grid item xs={12}>
             <ExplorerFilters state={state} dispatch={dispatch} />
           </Grid>
           <Grid item xs={12}>
-            <div>{game.pgn()}</div>
-            <button onClick={backMove}>Back</button>
-            <button onClick={resetGame}>Reset</button>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <button onClick={resetGame}>R</button>
+                <button onClick={backMove}>B</button>
+              </Grid>
+              <Grid item xs={8}>
+                {game.pgn()}
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
             <MoveList 
