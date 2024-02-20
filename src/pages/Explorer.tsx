@@ -6,6 +6,7 @@ import ExplorerFilters from "../components/board/ExplorerFilters";
 import { applyGameFilters, findMatchingGamesByPgn } from '../utils/pgnUtils';
 import MoveList from '../components/board/MoveList';
 import { DefaultFen, Pieces } from '../types';
+import { Grid } from '@mui/material';
 
 export interface ExplorerFilterState {
   color: Pieces;
@@ -79,26 +80,44 @@ export default function Explorer() {
     setGame(new Chess());
     setFen(new Chess().fen());
   }
+
+  function backMove() {
+    game.undo();
+    setFen(game.fen());
+  }
   
   return (
-    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-      <div style={{ height: "600px", width: "600px" }}>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={8}>
         <Chessboard 
           position={fen} 
           onPieceDrop={onPieceDrop}
           boardOrientation={state.flipBoard ? 'black' : 'white'} />
-      </div>
-      <div style={{ marginLeft: "25px" }}>
-        <div style={{ marginBottom: "10px"}}>
-          <ExplorerFilters state={state} dispatch={dispatch} />
-        </div>
-        <div>
-          <MoveList games={filteredGames} moveNumber={game.moveNumber()} turn={game.turn()}/>
-          <button onClick={resetGame}>
-            Reset
-          </button>
-        </div>
-      </div>
-    </div>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item xs={12}>
+            <ExplorerFilters state={state} dispatch={dispatch} />
+          </Grid>
+          <Grid item xs={12}>
+            <div>{game.pgn()}</div>
+            <button onClick={backMove}>Back</button>
+            <button onClick={resetGame}>Reset</button>
+          </Grid>
+          <Grid item xs={12}>
+            <MoveList 
+              games={filteredGames} 
+              moveNumber={game.moveNumber()} 
+              turn={game.turn()}
+              currentPgn={game.pgn()}/>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 }

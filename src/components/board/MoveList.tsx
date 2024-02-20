@@ -10,9 +10,10 @@ interface MoveListProps {
   games: Game[];
   moveNumber: number;
   turn: "w" | "b";
+  currentPgn: string;
 }
 
-export default function MoveList({ games, moveNumber, turn }: MoveListProps) {
+export default function MoveList({ games, moveNumber, turn, currentPgn }: MoveListProps) {
   const [gamesByMove, setGamesByMove] = useState<Map<string, Game[]>>(new Map());
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function MoveList({ games, moveNumber, turn }: MoveListProps) {
       <h2>Move List</h2>
       <Paper style={{ marginBottom: "10px" }}>
         <div>Games with this PGN: {games.length}</div>
+        <div>{currentPgn}</div>
         <StatsBar stats={getWinLossDrawStats(games, games[0].pieces)} exclude={9.99}/>
       </Paper>
       <TableContainer component={Paper} >
