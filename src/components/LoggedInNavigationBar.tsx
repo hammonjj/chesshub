@@ -13,6 +13,7 @@ import Settings from "../pages/Settings";
 import useGames from '../hooks/useGames';
 import Explorer from '../pages/Explorer';
 import { useNavigate } from 'react-router-dom';
+import Analysis from '../pages/Analysis';
 
 const drawerWidth = 240;
 const miniDrawerWidth = 56;
@@ -34,12 +35,11 @@ export default function LoggedInNavigationBar() {
   const pages = [
     { text: 'Home', icon: <HomeIcon />, component: <Home />, route: "/" },
     { text: 'Explorer', icon: <DeviceHubIcon />, component: <Explorer />, route: "/explorer"},
-    { text: 'Insights', icon: <InsightsIcon />, component: <div>Insights</div>, route: "/insights" },
+    { text: 'Analysis', icon: <InsightsIcon />, component: <Analysis />, route: "/analysis" },
     { text: 'Settings', icon: <SettingsIcon />, component: <Settings />, route: "/settings" },
   ];
 
   async function  handleRefetchClick() {
-    console.log("Refetching");
     setFetchingExternalData(true);
     await syncExternalAccountsToLocalDb();
     setFetchingExternalData(false);

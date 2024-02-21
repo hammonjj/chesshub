@@ -13,6 +13,7 @@ import AccessControl from './pages/AccessControl'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Home from './pages/Home'
+import Analysis from './pages/Analysis'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +37,7 @@ function App() {
                 <Route path="explorer" element={<ProtectedRoute><Explorer /></ProtectedRoute>} />
                 <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+                <Route path="analysis" element={<ProtectedRoute><Analysis /></ProtectedRoute>} />
                 <Route path="change-password" element={<ChangePassword />}/>
                 <Route path="validate-account" element={<ValidateAccount />} />
                 <Route path="login" element={<AccessControl />} />

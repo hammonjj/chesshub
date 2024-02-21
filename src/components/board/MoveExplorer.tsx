@@ -10,10 +10,12 @@ interface MoveListProps {
   games: Game[];
   moveNumber: number;
   turn: "w" | "b";
-  currentPgn: string;
+  onMoveClick: (move: string) => void;
+  onMoveHover: (move: string) => void;
+  onMoveHoverLeave: () => void;
 }
 
-export default function MoveList({ games, moveNumber, turn, currentPgn }: MoveListProps) {
+export default function MoveExplorer({ games, moveNumber, turn, onMoveClick, onMoveHover, onMoveHoverLeave }: MoveListProps) {
   const [gamesByMove, setGamesByMove] = useState<Map<string, Game[]>>(new Map());
 
   useEffect(() => {
@@ -40,19 +42,24 @@ export default function MoveList({ games, moveNumber, turn, currentPgn }: MoveLi
     setGamesByMove(tmpGamesByMove);
   }, [games, moveNumber, turn]);
 
+  const handleRowClick = (move: string) => {
+    onMoveClick(move);
+  };
+
   const sortedMoves = Array.from(gamesByMove.entries())
     .sort((a, b) => b[1].length - a[1].length)
     .map(entry => entry[0]);
 
   return (
     <div>
-      <h2>Move List</h2>
       <Paper style={{ marginBottom: "10px" }}>
         <div>Games with this PGN: {games.length}</div>
-        <div>{currentPgn}</div>
-        <StatsBar stats={getWinLossDrawStats(games, games[0].pieces)} exclude={9.99}/>
+        <StatsBar stats={games.length > 0 ? getWinLossDrawStats(games, games[0].pieces) : 
+            { wins: 0, losses: 0, draws: 0, total: 1 }} 
+          exclude={9.99}
+        />
       </Paper>
-      <TableContainer component={Paper} >
+      {games.length > 0 && <TableContainer component={Paper} >
         <Table aria-label="collapsible chess table" size="small">
           <TableHead>
             <TableRow>
@@ -64,7 +71,17 @@ export default function MoveList({ games, moveNumber, turn, currentPgn }: MoveLi
           </TableHead>
           <TableBody>
             {sortedMoves.map((move, index) => (
-              <TableRow key={index} sx={{ '& > *': { borderBottom: 'unset' } }}>
+              <TableRow 
+                key={index} 
+                hover
+                onClick={() => handleRowClick(move)}
+                sx={{ 
+                  '& > *': { borderBottom: 'unset' },
+                  '&:hover': { cursor: 'pointer' }
+                }}
+                onMouseEnter={() => onMoveHover(move)} // Assuming you pass an onMoveHover prop to MoveList
+                onMouseLeave={onMoveHoverLeave}
+              >
                 <TableCell component="th" scope="row" sx={{ whiteSpace: 'nowrap' }}>{move}</TableCell>
                 <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>{gamesByMove.get(move)?.length}</TableCell>
                 <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
@@ -75,7 +92,7 @@ export default function MoveList({ games, moveNumber, turn, currentPgn }: MoveLi
             ))}
         </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
     </div>
   );
 }

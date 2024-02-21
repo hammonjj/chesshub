@@ -13,11 +13,17 @@ export function getPlayerResult(pgn: ParseTree, pieces: string) {
 
 export function getGameObjectFromPgn(pgn: ParseTree, username: string, userProfile: number): Game {
   // @ts-expect-error "Comes from Lichess API, so we know it's there."
-  const { White, Site, UTCDate, UTCTime, TimeControl, ECO, Event } = pgn.tags;
+  const { White, Site, TimeControl, ECO, Event } = pgn.tags;
   const pieces = White === username ? "White" : "Black";
 
   return {
-    playedAt: new Date(`${UTCDate.value.replace(/\./g, '-')}T${UTCTime.value}Z`),
+    playedAt: new Date(Date.UTC(
+      pgn.tags?.UTCDate.year ?? 0, 
+      (pgn.tags?.UTCDate.month ?? 0) - 1, 
+      pgn.tags?.UTCDate.day, 
+      pgn.tags?.UTCTime.hour, 
+      pgn.tags?.UTCTime.minute, 
+      pgn.tags?.UTCTime.second)),
     url: Site,
     timeControl: TimeControl.value,
     variant: getVariantFromEvent(Event) as Variant,
@@ -81,11 +87,11 @@ export function applyGameFilters(
   result: Result | "All", 
   dateRange: string): Game[] {
   return games.filter((game) => {
-    if(game.pieces !== pieces) {
+    if(!applyDateFilter(game, dateRange)) {
       return false;
     }
 
-    if(!applyDateFilter(game, dateRange)) {
+    if(game.pieces !== pieces) {
       return false;
     }
 

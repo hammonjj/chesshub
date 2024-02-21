@@ -4,9 +4,11 @@ import { Chessboard } from "react-chessboard";
 import useGames from "../hooks/useGames";
 import ExplorerFilters from "../components/board/ExplorerFilters";
 import { applyGameFilters, findMatchingGamesByPgn } from '../utils/pgnUtils';
-import MoveList from '../components/board/MoveList';
+import MoveExplorer from '../components/board/MoveExplorer';
 import { DefaultFen, Pieces } from '../types';
-import { Grid } from '@mui/material';
+import { Grid, Typography, IconButton } from '@mui/material';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 export interface ExplorerFilterState {
   color: Pieces;
@@ -54,6 +56,7 @@ export default function Explorer() {
   const [state, dispatch] = useReducer(filterReducer, initialState);
   const [game, setGame] = useState(new Chess());
   const [fen, setFen] = useState(game.fen());
+  const [arrows, setArrows] = useState<Array<[Square, Square]>>([]);
 
   if(isLoadingGames) {
     return <Chessboard />;
@@ -76,6 +79,23 @@ export default function Explorer() {
     }
   }
 
+  function onMoveExplorerClick(move: string) {
+    game.move(move);
+    setFen(game.fen());
+  }
+
+  const onMoveHover = (moveNotation: string) => {
+    const moves = game.moves({ verbose: true });
+    const move = moves.find(m => m.san === moveNotation);
+    if(move) {
+      setArrows([[move.from, move.to]]);
+    }
+  };
+
+  const onMoveHoverLeave = () => {
+    setArrows([]);
+  };
+
   function resetGame() {
     setGame(new Chess());
     setFen(new Chess().fen());
@@ -92,6 +112,7 @@ export default function Explorer() {
         <Chessboard 
           position={fen} 
           onPieceDrop={onPieceDrop}
+          customArrows={arrows}
           boardOrientation={state.flipBoard ? 'black' : 'white'} />
       </Grid>
       <Grid item xs={12} md={4} order={{ xs: 1, md: 2 }}>
@@ -100,22 +121,26 @@ export default function Explorer() {
             <ExplorerFilters state={state} dispatch={dispatch} />
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={2}>
+            <Grid container spacing={0}>
               <Grid item xs={4}>
-                <button onClick={resetGame}>R</button>
-                <button onClick={backMove}>B</button>
+                <IconButton onClick={resetGame} size="small"><FirstPageIcon/></IconButton>
+                <IconButton onClick={backMove} size="small"><KeyboardArrowLeftIcon/></IconButton>
               </Grid>
               <Grid item xs={8}>
-                {game.pgn()}
+                <Typography variant="body1" align="left">
+                  {game.pgn()}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <MoveList 
+            <MoveExplorer
               games={filteredGames} 
               moveNumber={game.moveNumber()} 
               turn={game.turn()}
-              currentPgn={game.pgn()}/>
+              onMoveClick={onMoveExplorerClick}
+              onMoveHover={onMoveHover}
+              onMoveHoverLeave={onMoveHoverLeave} />
           </Grid>
         </Grid>
       </Grid>

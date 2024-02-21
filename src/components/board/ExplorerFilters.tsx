@@ -14,11 +14,19 @@ export default function ExplorerFilters(props: ExplorerFiltersProps) {
     <div>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
         <ButtonGroup variant="contained" aria-label="outlined primary button group">
-          <Button disabled={state.color === 'White'} onClick={() => dispatch({ type: 'SET_COLOR', payload: 'White' })}>White</Button>
-          <Button disabled={state.color === 'Black'} onClick={() => dispatch({ type: 'SET_COLOR', payload: 'Black' })}>Black</Button>
+          <Button 
+            disabled={state.color === 'White'} 
+            onClick={() => dispatch({ type: 'SET_COLOR', payload: 'White' })}>
+              White
+          </Button>
+          <Button 
+            disabled={state.color === 'Black'} 
+            onClick={() => dispatch({ type: 'SET_COLOR', payload: 'Black' })}>
+              Black
+          </Button>
         </ButtonGroup>
       </div>
-      <FormControl fullWidth style={{ marginBottom: "10px" }}>
+      <FormControl fullWidth style={{ marginBottom: "10px" }} size="small">
         <InputLabel>Date</InputLabel>
         <Select 
           value={state.date} 
@@ -32,7 +40,7 @@ export default function ExplorerFilters(props: ExplorerFiltersProps) {
           <MenuItem value="this-year">This year</MenuItem>
         </Select>
       </FormControl>
-      <FormControl fullWidth style={{ marginBottom: "10px" }}>
+      <FormControl fullWidth style={{ marginBottom: "10px" }} size="small">
         <InputLabel>Variant</InputLabel>
         <Select 
           value={state.variant} 
@@ -46,7 +54,7 @@ export default function ExplorerFilters(props: ExplorerFiltersProps) {
           <MenuItem value="Classical">Classical</MenuItem>
         </Select>
       </FormControl>
-      <FormControl fullWidth style={{ marginBottom: "10px" }}>
+      <FormControl fullWidth style={{ marginBottom: "10px" }} size="small">
         <InputLabel>Outcome</InputLabel>
         <Select 
           value={state.outcome} 
@@ -59,7 +67,12 @@ export default function ExplorerFilters(props: ExplorerFiltersProps) {
           <MenuItem value="Draw">Draw</MenuItem>
         </Select>
       </FormControl>
-      <FormControlLabel control={<Checkbox checked={state.flipBoard} onChange={() => dispatch({ type: 'FLIP_BOARD' })} />} label="Flip Board" />
+      <FormControlLabel 
+        control={
+          <Checkbox 
+            checked={state.flipBoard} 
+            onChange={() => dispatch({ type: 'FLIP_BOARD' })} />} 
+        label="Flip Board" />
     </div>
   );
 }

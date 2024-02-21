@@ -42,14 +42,20 @@ interface GameArchive {
 }
 
 export const convertRawChessDotComGameToGame = (rawGame: RawChessDotComGame, username: string, userProfile: number): Game => {
-  const { white, endTime, timeClass, url, timeControl } = rawGame;
+  const { white, timeClass, url, timeControl } = rawGame;
   const pieces = white.username.toLowerCase() === username.toLowerCase() ? 'White': 'Black';
 
   const rawPgn = parseGame(rawGame.pgn);
   const result = getPlayerResult(rawPgn, pieces);
-
+  
   return {
-    playedAt: new Date(endTime * 1000),
+    playedAt: new Date(Date.UTC(
+      rawPgn.tags?.UTCDate.year ?? 0, 
+      (rawPgn.tags?.UTCDate.month ?? 0) - 1, 
+      rawPgn.tags?.UTCDate.day, 
+      rawPgn.tags?.UTCTime.hour, 
+      rawPgn.tags?.UTCTime.minute, 
+      rawPgn.tags?.UTCTime.second)), 
     url: url,
     timeControl: timeControl,
     variant: timeClass[0].toUpperCase() + timeClass.slice(1) as Variant,
@@ -57,7 +63,7 @@ export const convertRawChessDotComGameToGame = (rawGame: RawChessDotComGame, use
     pgn: rawGame.pgn,
     pieces: pieces,
     moves: Math.ceil(rawPgn.moves.length / 2),
-    eco: "Unknown",
+    eco: rawPgn.tags?.ECO ?? "",
     result: result,
     platform: 'chess.com',
     uuid: rawGame.uuid,

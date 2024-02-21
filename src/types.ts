@@ -40,3 +40,10 @@ export interface Game {
   platform: string;
   uuid?: string;
 }
+
+export interface StockfishAnalysisResult {
+  depth: number;
+  score: number; // Centipawns. Positive for white's advantage, negative for black's.
+  multipv: number; // Which line this is (1st best move, 2nd best move, etc.)
+  pv: string[]; // Principal Variation (best line found) as an array of moves
+}
