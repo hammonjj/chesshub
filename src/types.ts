@@ -47,3 +47,9 @@ export interface StockfishAnalysisResult {
   multipv: number; // Which line this is (1st best move, 2nd best move, etc.)
   pv: string[]; // Principal Variation (best line found) as an array of moves
 }
+
+export interface MoveEvaluation {
+  score: number;
+  multipv: number;
+  move: string; //This is the concatenated move list
+}
