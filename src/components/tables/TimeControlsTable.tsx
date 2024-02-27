@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Skeleton } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Skeleton, useMediaQuery } from "@mui/material";
 import { Game } from "../../types";
 import { useEffect, useState } from "react";
 import TimeControlsTableRow from "./TimeControlsTableRow";
@@ -21,8 +21,9 @@ interface PlatformDetail {
   losses: number;
 }
 
-export default function TimeControlsTable() {
+export default function TimeControlsTable() {  
   const { games, isLoadingGames } = useGames();
+  const isMobile = useMediaQuery('(max-width:600px)');
   const [aggregatedResults, setAggregatedResults] = useState<AggregatedResult[]>([]);
 
   useEffect(() => {
@@ -41,9 +42,12 @@ export default function TimeControlsTable() {
             <TableCell sx={{ whiteSpace: 'nowrap', width: '5%' }} />
             <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}>Variant</TableCell>
             <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>Games</TableCell>
-            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>W</TableCell>
-            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>D</TableCell>
-            <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>L</TableCell>
+            {!isMobile && (
+              <>
+                <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>W</TableCell>
+                <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>D</TableCell>
+                <TableCell align="right" sx={{ whiteSpace: 'nowrap', width: '10%' }}>L</TableCell>
+              </>)}
             <TableCell align="right">W/D/L</TableCell>
           </TableRow>
         </TableHead>

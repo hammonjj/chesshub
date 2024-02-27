@@ -22,7 +22,7 @@ export default function MoveExplorer({ games, moveNumber, turn, onMoveClick, onM
     const tmpGamesByMove = new Map<string, Game[]>();
     for(let i = 0; i < games.length; i++) {
       const parsedGame = parseGame(games[i].pgn);
-
+      
       let index = parsedGame.moves.findIndex(element => element.moveNumber === moveNumber);
       if(turn === 'b') {
         index++;

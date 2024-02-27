@@ -6,6 +6,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 // import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 // import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { CircularProgress } from '@mui/material';
 
 import Home from "../pages/Home";
@@ -14,6 +15,7 @@ import useGames from '../hooks/useGames';
 import Explorer from '../pages/Explorer';
 import { useNavigate } from 'react-router-dom';
 import Analysis from '../pages/Analysis';
+import Insights from '../pages/Insights';
 
 const drawerWidth = 240;
 const miniDrawerWidth = 56;
@@ -34,6 +36,7 @@ export default function LoggedInNavigationBar() {
 
   const pages = [
     { text: 'Home', icon: <HomeIcon />, component: <Home />, route: "/" },
+    { text: 'Insights', icon: <LeaderboardIcon />, component: <Insights />, route: "/insights"},
     { text: 'Explorer', icon: <DeviceHubIcon />, component: <Explorer />, route: "/explorer"},
     { text: 'Analysis', icon: <InsightsIcon />, component: <Analysis />, route: "/analysis" },
     { text: 'Settings', icon: <SettingsIcon />, component: <Settings />, route: "/settings" },

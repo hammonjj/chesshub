@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AggregatedResult } from "./TimeControlsTable";
-import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, useMediaQuery } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import StatsBar from "../StatsBar";
@@ -11,6 +11,7 @@ interface TimeControlsTableRow {
 
 const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
   const [open, setOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width:600px)');
   const padding = "16px";
   
   return (
@@ -23,9 +24,12 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
         </TableCell>
         <TableCell component="th" scope="row">{row.variant}</TableCell>
         <TableCell align="right" style={{ padding: padding }}>{row.totalGames}</TableCell>
-        <TableCell align="right" style={{ padding: padding }}>{row.wins}</TableCell>
-        <TableCell align="right" style={{ padding: padding }}>{row.draws}</TableCell>
-        <TableCell align="right" style={{ padding: padding }}>{row.losses}</TableCell>
+        {!isMobile && (
+          <>
+            <TableCell align="right" style={{ padding: padding }}>{row.wins}</TableCell>
+            <TableCell align="right" style={{ padding: padding }}>{row.draws}</TableCell>
+            <TableCell align="right" style={{ padding: padding }}>{row.losses}</TableCell>
+          </>)}
         <TableCell>
           <StatsBar stats={{ 
             wins: row.wins, 
