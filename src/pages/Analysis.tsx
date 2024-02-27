@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { parseStockfishOutput } from "../utils/stockfish";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import AnalysisTable from "../components/board/AnalysisTable";
 import { MoveEvaluation, StockfishAnalysisResult } from "../types";
+import PgnTable from "../components/board/PgnTable";
+import { convertPgnStringToArray } from "../utils/pgnUtils";
 //import { Polyglot } from 'cm-polyglot/src/polyglot';
 
 export default function Analysis() {
@@ -42,12 +44,12 @@ export default function Analysis() {
     const newWorker = new Worker(new URL('../assets/stockfish/stockfishWorker.js', import.meta.url));
     newWorker.onmessage = (e) => {
       const result = parseStockfishOutput(e.data);
-
+      console.log("Message from Stockfish worker: ", result);
       if(!result) {
         return;
       }
 
-      console.log("Message from Stockfish worker: ", result);
+      //console.log("Message from Stockfish worker: ", result);
       setStockfishEvaluations(prevEvaluations => {
         const newEvaluations = new Map(prevEvaluations);
         newEvaluations.set(result.multipv, result);
@@ -105,7 +107,6 @@ export default function Analysis() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
-        
         <Chessboard 
           position={fen} 
           onPieceDrop={onPieceDrop}
@@ -117,9 +118,7 @@ export default function Analysis() {
             <AnalysisTable evaluations={evaluationsForTable} />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="body1" align="left">
-              {game.pgn()}
-            </Typography>
+            <PgnTable moves={convertPgnStringToArray(game.pgn())} />
           </Grid>
         </Grid>
       </Grid>

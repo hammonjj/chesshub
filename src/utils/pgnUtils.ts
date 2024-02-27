@@ -164,3 +164,7 @@ function getVariantFromEvent(event: string) {
     return "Unknown"
   }
 }
+
+export function convertPgnStringToArray(pgn: string): string[][] {
+  return pgn.split(/\d+\./).slice(1).map((move) => move.trim().split(" "));
+}
