@@ -31,3 +31,10 @@ position [fen | startpos] moves [movelist]: Sets the current position.
 go depth [depth]: Starts the analysis to a specific depth. 
  - Example: go depth 20 tells Stockfish to analyze the position down to 20 ply (half-moves).
 go movetime [time]: Analyzes the position for a given amount of time in milliseconds.
+
+## Random Useful Links
+https://syzygy-tables.info/
+https://github.com/lichess-org/mobile/tree/main
+https://github.com/lichess-org/chess-openings
+https://github.com/lichess-org/lila-tablebase
+https://lichess.org/api#tag/Analysis
