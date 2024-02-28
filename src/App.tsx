@@ -13,7 +13,7 @@ import AccessControl from "./pages/AccessControl";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Home from "./pages/Home";
-import Analysis2 from "./pages/Analysis2";
+import Analysis from "./pages/Analysis";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,7 +69,7 @@ function App() {
                   path="analysis"
                   element={
                     <ProtectedRoute>
-                      <Analysis2 />
+                      <Analysis />
                     </ProtectedRoute>
                   }
                 />

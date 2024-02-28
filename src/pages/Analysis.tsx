@@ -10,7 +10,7 @@ import useAnalysis from "../hooks/useAnalysis";
 import { convertPgnStringToArray } from "../utils/pgnUtils";
 import { STARTING_FEN } from "../utils/constants";
 
-export default function Analysis2() {
+export default function Analysis() {
   const { gameId } = useParams();
   const { games, isLoadingGames } = useGames();
   const [game, setGame] = useState(new Chess());

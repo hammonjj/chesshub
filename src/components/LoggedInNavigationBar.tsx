@@ -26,7 +26,7 @@ import useGames from "../hooks/useGames";
 import Explorer from "../pages/Explorer";
 import { useNavigate } from "react-router-dom";
 import Insights from "../pages/Insights";
-import Analysis2 from "../pages/Analysis2";
+import Analysis from "../pages/Analysis";
 
 const drawerWidth = 240;
 const miniDrawerWidth = 56;
@@ -49,7 +49,7 @@ export default function LoggedInNavigationBar() {
     { text: "Home", icon: <HomeIcon />, component: <Home />, route: "/" },
     { text: "Insights", icon: <LeaderboardIcon />, component: <Insights />, route: "/insights" },
     { text: "Explorer", icon: <DeviceHubIcon />, component: <Explorer />, route: "/explorer" },
-    { text: "Analysis", icon: <InsightsIcon />, component: <Analysis2 />, route: "/analysis" },
+    { text: "Analysis", icon: <InsightsIcon />, component: <Analysis />, route: "/analysis" },
     { text: "Settings", icon: <SettingsIcon />, component: <Settings />, route: "/settings" }
   ];
 
