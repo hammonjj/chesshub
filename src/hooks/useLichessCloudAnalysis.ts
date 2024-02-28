@@ -19,7 +19,7 @@ async function fetchCloudAnalysis(fen: string): Promise<StockfishAnalysisResult[
   }
 
   const data = await response.json();
-  console.log("LichessCloudData: ", data);
+
   return data.pvs.map(
     (pv: { moves: string; cp: number; mate?: number }, index: number): StockfishAnalysisResult => ({
       depth: data.depth, // Use the overall depth from the response

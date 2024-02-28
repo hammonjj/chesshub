@@ -25,6 +25,7 @@ export default function useAnalysis(fen: string, turn: Pieces) {
         }
       };
 
+      //Likely still have work to do here. Not sure if this updates properly
       worker.postMessage("setoption name MultiPV value 3");
       worker.postMessage(`position fen ${fen}`);
       worker.postMessage("go depth 20");
@@ -35,10 +36,6 @@ export default function useAnalysis(fen: string, turn: Pieces) {
     analyzeWithStockfish();
   }, [fen, lichessData, turn, isLoadingLichess]);
 
-  const ret = fen === STARTING_FEN ? [] : lichessData || stockfishData;
-  console.log("stockfishData: ", stockfishData);
-  console.log("lichessData: ", lichessData);
-  console.log("ret: ", ret);
   return {
     data: fen === STARTING_FEN ? [] : lichessData || stockfishData,
     isLoading: isLoadingLichess || isLoadingStockfish,
