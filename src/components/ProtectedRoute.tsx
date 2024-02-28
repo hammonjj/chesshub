@@ -1,6 +1,6 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { ReactNode } from 'react';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { ReactNode } from "react";
 
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { session } = useAuth();

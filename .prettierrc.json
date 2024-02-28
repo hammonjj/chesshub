@@ -3,5 +3,6 @@
   "tabWidth": 2,
   "bracketSpacing": true,
   "bracketSameLine": false,
-  "allowParens": "always"
+  "allowParens": "always",
+  "printWidth": 120
 }
