@@ -4,11 +4,11 @@ import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { Grid } from "@mui/material";
 import AnalysisTable from "../components/board/AnalysisTable";
-import PgnTable from "../components/board/PgnTable";
 import useGames from "../hooks/useGames";
 import useAnalysis from "../hooks/useAnalysis";
-import { convertPgnStringToArray } from "../utils/pgnUtils";
 import { STARTING_FEN } from "../utils/constants";
+import BoardControls from "../components/board/BoardControls";
+import PgnHistoryTable from "../components/board/PgnHistoryTable";
 
 export default function Analysis() {
   const { gameId } = useParams();
@@ -18,12 +18,19 @@ export default function Analysis() {
   const [boardOrientation] = useState<"white" | "black">("white");
 
   useEffect(() => {
-    if (!isLoadingGames && games.length > 0 && gameId) {
-      const selectedGame = games.find((g) => g.id === +gameId);
-      if (selectedGame) {
-        setGame(new Chess(selectedGame.pgn));
-      }
+    if (isLoadingGames || games.length === 0 || !gameId) {
+      return;
     }
+
+    const selectedGame = games.find((g) => g.id === +gameId);
+
+    if (!selectedGame) {
+      return;
+    }
+    const tmpGame = new Chess();
+    console.log("selectedGame.pgn", selectedGame.pgn);
+    //tmpGame.loadPgn(selectedGame.pgn);
+    setGame(tmpGame);
   }, [gameId, games, isLoadingGames]);
 
   const { data: analysisData } = useAnalysis(fen, game.turn() === "w" ? "White" : "Black");
@@ -61,7 +68,14 @@ export default function Analysis() {
             <AnalysisTable evaluations={evaluationsForTable} fen={fen} />
           </Grid>
           <Grid item xs={12}>
-            <PgnTable moves={convertPgnStringToArray(game.pgn())} />
+            <BoardControls resetGame={() => {}} goBackMove={() => {}} goForwardMove={() => {}} goLastMove={() => {}} />
+          </Grid>
+          <Grid item xs={12}>
+            <PgnHistoryTable
+              moves={game.history()}
+              moveNumber={game.moveNumber() === 1 && game.turn() === "w" ? 0 : game.moveNumber()}
+              turn={game.turn()}
+            />
           </Grid>
         </Grid>
       </Grid>

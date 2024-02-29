@@ -8,7 +8,7 @@ export default function useLichessCloudAnalysis(fen: string) {
     queryFn: () => fetchCloudAnalysis(fen),
     enabled: !!fen && fen !== STARTING_FEN
   });
-  console.log("useLichessCloudAnalysis: ", data, isLoading, error);
+
   return { data, isLoading, error };
 }
 

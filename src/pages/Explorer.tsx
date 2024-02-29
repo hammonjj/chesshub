@@ -6,9 +6,8 @@ import ExplorerFilters from "../components/board/ExplorerFilters";
 import { applyGameFilters, findMatchingGamesByPgn } from "../utils/pgnUtils";
 import MoveExplorer from "../components/board/MoveExplorer";
 import { DefaultFen, Pieces } from "../types";
-import { Grid, Typography, IconButton } from "@mui/material";
-import FirstPageIcon from "@mui/icons-material/FirstPage";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { Grid, Typography } from "@mui/material";
+import BoardControls from "../components/board/BoardControls";
 
 export interface ExplorerFilterState {
   color: Pieces;
@@ -120,14 +119,14 @@ export default function Explorer() {
             <ExplorerFilters state={state} dispatch={dispatch} />
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={0}>
+            <Grid container spacing={1} direction="column">
               <Grid item xs={4}>
-                <IconButton onClick={resetGame} size="small">
-                  <FirstPageIcon />
-                </IconButton>
-                <IconButton onClick={backMove} size="small">
-                  <KeyboardArrowLeftIcon />
-                </IconButton>
+                <BoardControls
+                  resetGame={resetGame}
+                  goBackMove={backMove}
+                  goForwardMove={() => {}}
+                  goLastMove={() => {}}
+                />
               </Grid>
               <Grid item xs={8}>
                 <Typography variant="body1" align="left">

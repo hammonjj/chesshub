@@ -23,10 +23,7 @@ const initialState: InsightsFilterState = {
   variant: "All"
 };
 
-const filterReducer = (
-  state: InsightsFilterState,
-  action: InsightsFilterAction
-) => {
+const filterReducer = (state: InsightsFilterState, action: InsightsFilterAction) => {
   switch (action.type) {
     case "SET_DATE":
       return { ...state, date: action.payload };
@@ -61,25 +58,21 @@ export default function Insights() {
       <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
         <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid item xs={12} md={6}>
+            <WinRateByColor games={filteredGames} isLoading={isLoadingGames} />
+          </Grid>
+          <Grid item xs={12} md={6}>
             <ResultsByOpponentRating
-              games={filteredGames.filter(
-                (game) => game.platform === "chess.com"
-              )}
+              games={filteredGames.filter((game) => game.platform === "chess.com")}
               isLoading={isLoadingGames}
               platform="chess.com"
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <ResultsByOpponentRating
-              games={filteredGames.filter(
-                (game) => game.platform === "lichess"
-              )}
+              games={filteredGames.filter((game) => game.platform === "lichess")}
               isLoading={isLoadingGames}
               platform="lichess"
             />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <WinRateByColor games={filteredGames} isLoading={isLoadingGames} />
           </Grid>
         </Grid>
       </Box>

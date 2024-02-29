@@ -66,7 +66,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="analysis"
+                  path="analysis/:gameId?"
                   element={
                     <ProtectedRoute>
                       <Analysis />
