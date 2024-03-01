@@ -9,6 +9,7 @@ import useAnalysis from "../hooks/useAnalysis";
 import { STARTING_FEN } from "../utils/constants";
 import BoardControls from "../components/board/BoardControls";
 import PgnHistoryTable from "../components/board/PgnHistoryTable";
+import { BoardMove } from "../types";
 
 export default function Analysis() {
   const { gameId } = useParams();
@@ -16,20 +17,8 @@ export default function Analysis() {
   const [game, setGame] = useState(new Chess());
   const [fen, setFen] = useState<string>(STARTING_FEN);
   const [boardOrientation] = useState<"white" | "black">("white");
-
-  //Create a collection of moves
-  //{
-  //  move: "e4",
-  //  moveNumber: 1,
-  //  turn: "w",
-  //  fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
-  //}
-  //
-  //Put this in an array so the moves are already in order
-  //Pass the array to the PgnHistoryTable component, along with the current move number and turn
-  //The chess object is really only used for games the user is currently inputing, not their previous games
-  //
-  //Might need to revisit this when working on variations, but I'll cross that bridge when I get to it
+  const [currentMoveNumber, setCurrentMoveNumber] = useState(0);
+  const [moves, setMoves] = useState<BoardMove[]>([]);
 
   useEffect(() => {
     if (isLoadingGames || games.length === 0 || !gameId) {
@@ -47,7 +36,7 @@ export default function Analysis() {
     setGame(tmpGame);
   }, [gameId, games, isLoadingGames]);
 
-  const { data: analysisData } = useAnalysis(fen, game.turn() === "w" ? "White" : "Black");
+  const { data: analysisData } = useAnalysis(fen, currentMoveNumber % 2 === 0 ? "White" : "Black");
 
   function onPieceDrop(sourceSquare: Square, targetSquare: Square) {
     const move = game.move({ from: sourceSquare, to: targetSquare });
@@ -55,12 +44,67 @@ export default function Analysis() {
       return false;
     }
 
-    setFen(game.fen());
+    //Check if the move made by the user is actually the next move in the moves array
+    //  - If it is, then move the piece, increment the move number and set the fen
+    //  - If it isn't, we'll deal with variations later
+    if (currentMoveNumber < moves.length) {
+      setFen(moves[currentMoveNumber + 1].fen);
+    } else {
+      const moveToAdd: BoardMove = {
+        notation: move.san,
+        moveNumber: currentMoveNumber,
+        turn: game.turn(),
+        fen: game.fen()
+      };
+
+      setFen(game.fen());
+      setMoves([...moves, moveToAdd]);
+    }
+
+    setCurrentMoveNumber((currentMoveNumber) => currentMoveNumber + 1);
     return true;
   }
 
+  function resetGame() {
+    setCurrentMoveNumber(0);
+    setFen(STARTING_FEN);
+  }
+
+  function goBackMove() {
+    if (currentMoveNumber === 0) {
+      return;
+    }
+
+    if (currentMoveNumber === 1) {
+      setFen(STARTING_FEN);
+      setCurrentMoveNumber(0);
+      return;
+    }
+
+    setFen(moves[currentMoveNumber - 2].fen);
+    setCurrentMoveNumber((currentMoveNumber) => currentMoveNumber - 1);
+  }
+
+  function goForwardMove() {
+    if (currentMoveNumber === moves.length) {
+      return;
+    }
+
+    setFen(moves[currentMoveNumber].fen);
+    setCurrentMoveNumber((currentMoveNumber) => currentMoveNumber + 1);
+  }
+
+  function goLastMove() {
+    if (moves.length === 0) {
+      return;
+    }
+
+    setFen(moves[moves.length - 1].fen);
+    setCurrentMoveNumber(moves.length);
+  }
+
   if (isLoadingGames) {
-    return <p>Loading...</p>;
+    return <Chessboard />;
   }
 
   const evaluationsForTable = analysisData
@@ -82,13 +126,18 @@ export default function Analysis() {
             <AnalysisTable evaluations={evaluationsForTable} fen={fen} />
           </Grid>
           <Grid item xs={12}>
-            <BoardControls resetGame={() => {}} goBackMove={() => {}} goForwardMove={() => {}} goLastMove={() => {}} />
+            <BoardControls
+              resetGame={resetGame}
+              goBackMove={goBackMove}
+              goForwardMove={goForwardMove}
+              goLastMove={goLastMove}
+            />
           </Grid>
           <Grid item xs={12}>
             <PgnHistoryTable
-              moves={game.history()}
-              moveNumber={game.moveNumber() === 1 && game.turn() === "w" ? 0 : game.moveNumber()}
-              turn={game.turn()}
+              moves={moves}
+              moveNumber={currentMoveNumber}
+              turn={currentMoveNumber % 2 === 0 ? "w" : "b"}
             />
           </Grid>
         </Grid>
