@@ -17,6 +17,20 @@ export default function Analysis() {
   const [fen, setFen] = useState<string>(STARTING_FEN);
   const [boardOrientation] = useState<"white" | "black">("white");
 
+  //Create a collection of moves
+  //{
+  //  move: "e4",
+  //  moveNumber: 1,
+  //  turn: "w",
+  //  fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+  //}
+  //
+  //Put this in an array so the moves are already in order
+  //Pass the array to the PgnHistoryTable component, along with the current move number and turn
+  //The chess object is really only used for games the user is currently inputing, not their previous games
+  //
+  //Might need to revisit this when working on variations, but I'll cross that bridge when I get to it
+
   useEffect(() => {
     if (isLoadingGames || games.length === 0 || !gameId) {
       return;

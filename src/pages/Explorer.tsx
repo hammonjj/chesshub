@@ -70,6 +70,9 @@ export default function Explorer() {
     try {
       game.move({ from: sourceSquare, to: targetSquare });
       setFen(game.fen());
+
+      const audio = new Audio("/move.mp3");
+      audio.play().catch((error) => console.error("Error playing audio:", error));
       return true;
     } catch (e) {
       return false;
