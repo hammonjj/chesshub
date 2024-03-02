@@ -19,6 +19,7 @@ export default function Analysis() {
   const [boardOrientation] = useState<"white" | "black">("white");
   const [currentMoveNumber, setCurrentMoveNumber] = useState(0);
   const [moves, setMoves] = useState<BoardMove[]>([]);
+  const { data: analysisData } = useAnalysis(fen, currentMoveNumber % 2 === 0 ? "White" : "Black");
 
   useEffect(() => {
     if (isLoadingGames || games.length === 0 || !gameId) {
@@ -31,15 +32,32 @@ export default function Analysis() {
       return;
     }
     const tmpGame = new Chess();
-    console.log("selectedGame.pgn", selectedGame.pgn);
-    //tmpGame.loadPgn(selectedGame.pgn);
+    tmpGame.loadPgn(selectedGame.pgn), { sloppy: true };
+    setCurrentMoveNumber(0);
     setGame(tmpGame);
-  }, [gameId, games, isLoadingGames]);
 
-  const { data: analysisData } = useAnalysis(fen, currentMoveNumber % 2 === 0 ? "White" : "Black");
+    //Need to now parse the history of the game moves and translate that to the moves array
+    const movesArray: BoardMove[] = [];
+    const history = tmpGame.history({ verbose: true });
+    history.forEach((move, index) => {
+      const moveToAdd: BoardMove = {
+        notation: move.san,
+        moveNumber: index,
+        turn: move.color,
+        fen: move.after
+      };
+      movesArray.push(moveToAdd);
+    });
+
+    setMoves(movesArray);
+  }, [gameId, games, isLoadingGames]);
 
   function onPieceDrop(sourceSquare: Square, targetSquare: Square) {
     const move = game.move({ from: sourceSquare, to: targetSquare });
+
+    //console.log("move.san", move.san);
+    //console.log("nextMoveSan", moves[currentMoveNumber]?.notation);
+
     if (!move) {
       return false;
     }
@@ -47,6 +65,7 @@ export default function Analysis() {
     //Check if the move made by the user is actually the next move in the moves array
     //  - If it is, then move the piece, increment the move number and set the fen
     //  - If it isn't, we'll deal with variations later
+
     if (currentMoveNumber < moves.length) {
       setFen(moves[currentMoveNumber + 1].fen);
     } else {
