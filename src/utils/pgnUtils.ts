@@ -11,11 +11,7 @@ export function getPlayerResult(pgn: ParseTree, pieces: string) {
   }
 }
 
-export function getGameObjectFromPgn(
-  pgn: ParseTree,
-  username: string,
-  userProfile: number
-): Game {
+export function getGameObjectFromPgn(pgn: ParseTree, username: string, userProfile: number): Game {
   // @ts-expect-error "Comes from Lichess API, so we know it's there."
   const { White, Site, TimeControl, ECO, Event } = pgn.tags;
   const pieces = White === username ? "White" : "Black";
@@ -40,15 +36,14 @@ export function getGameObjectFromPgn(
     moves: Math.ceil(pgn.moves.length / 2),
     eco: ECO,
     result: getPlayerResult(pgn, pieces),
-    platform: "lichess"
+    platform: "lichess",
+    playerElo: +(pieces === "White" ? pgn.tags?.WhiteElo ?? 0 : pgn.tags?.BlackElo ?? 0),
+    opponentElo: +(pieces === "White" ? pgn.tags?.BlackElo ?? 0 : pgn.tags?.WhiteElo ?? 0)
   };
 }
 
 //Probably want to actually use a real library for this, but this will suffice for now
-export function findMatchingGamesByPgn(
-  games: Game[],
-  targetPgn: string
-): Game[] {
+export function findMatchingGamesByPgn(games: Game[], targetPgn: string): Game[] {
   const parsedTargetPgn = parseGame(targetPgn);
 
   return games.filter((game) => {
@@ -125,29 +120,16 @@ export function applyDateFilter(game: Game, dateRange: string) {
   if (dateRange === "all-time") {
     return true;
   }
-  if (
-    dateRange === "this-week" &&
-    game.playedAt > new Date(new Date().setDate(new Date().getDate() - 7))
-  ) {
+  if (dateRange === "this-week" && game.playedAt > new Date(new Date().setDate(new Date().getDate() - 7))) {
     return true;
   }
-  if (
-    dateRange === "this-month" &&
-    game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 1))
-  ) {
+  if (dateRange === "this-month" && game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 1))) {
     return true;
   }
-  if (
-    dateRange === "last-three-months" &&
-    game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 3))
-  ) {
+  if (dateRange === "last-three-months" && game.playedAt > new Date(new Date().setMonth(new Date().getMonth() - 3))) {
     return true;
   }
-  if (
-    dateRange === "this-year" &&
-    game.playedAt >
-      new Date(new Date().setFullYear(new Date().getFullYear() - 1))
-  ) {
+  if (dateRange === "this-year" && game.playedAt > new Date(new Date().setFullYear(new Date().getFullYear() - 1))) {
     return true;
   }
 

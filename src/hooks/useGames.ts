@@ -21,14 +21,14 @@ export default function useGames() {
     }
 
     const promises: Promise<void>[] = [];
-    const chessComAccount = externalAccounts.find((account) => account.platform === 'chess.com');
-    if (chessComAccount) { 
-      promises.push(syncChessDotComGames(chessComAccount)); 
+    const chessComAccount = externalAccounts.find((account) => account.platform === "chess.com");
+    if (chessComAccount) {
+      promises.push(syncChessDotComGames(chessComAccount));
     }
 
-    const lichessAccount = externalAccounts.find((account) => account.platform === 'lichess');
-    if (lichessAccount) { 
-      promises.push(syncLichessGames(lichessAccount)); 
+    const lichessAccount = externalAccounts.find((account) => account.platform === "lichess");
+    if (lichessAccount) {
+      promises.push(syncLichessGames(lichessAccount));
     }
 
     await Promise.all(promises);
@@ -59,9 +59,11 @@ export default function useGames() {
         // Proceed if the archive is for the month of the most recent game or later.
         if (!mostRecentGameDate || archiveDate >= mostRecentGameDate) {
           const archiveGames = await fetchGamesArchive(archive.archivesUrl);
-          
-          const gamesObjList = archiveGames.map(
-            (rawGame) => convertRawChessDotComGameToGame(rawGame, chessComAccount.accountName, userProfile!.id));
+
+          const gamesObjList = archiveGames.map((rawGame) =>
+            convertRawChessDotComGameToGame(rawGame, chessComAccount.accountName, userProfile!.id)
+          );
+
           gamesToInsert = gamesToInsert.concat(gamesObjList);
         }
       }
@@ -71,22 +73,21 @@ export default function useGames() {
       if (!gamesToInsert.length) {
         console.log("No new Chess.com games to insert");
         return;
-      }
-      else {
+      } else {
         console.log(`Found ${gamesToInsert.length} Chess.com games to insert`);
       }
 
-      const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);
+      const { error } = await supabase.from("ChessHub_Games").insert(gamesToInsert);
 
-      if(error) {
+      if (error) {
         console.log("Error inserting games", error);
-        throw new Error('Failed to insert games');
+        throw new Error("Failed to insert games");
       }
 
       //Will convert to mutation later
-      queryClient.invalidateQueries({ queryKey: ['games'] });      
+      queryClient.invalidateQueries({ queryKey: ["games"] });
     } catch (error) {
-      console.error('Failed to sync external accounts:', error);
+      console.error("Failed to sync external accounts:", error);
     }
   }
 
@@ -97,27 +98,29 @@ export default function useGames() {
     if (!mostRecentGame) {
       console.log("No Lichess games found in local data. Syncing all available archives.");
     }
-    
+
     const gamesToInsert = await fetchLichessGames(
-      lichessAccount.accountName, userProfile!.id, mostRecentGame?.playedAt);
+      lichessAccount.accountName,
+      userProfile!.id,
+      mostRecentGame?.playedAt
+    );
 
     if (!gamesToInsert.length) {
       console.log("No new Lichess games to insert");
       return;
-    }
-    else {
+    } else {
       console.log(`Found ${gamesToInsert.length} Lichess games to insert`);
     }
 
-    const { error } = await supabase.from('ChessHub_Games').insert(gamesToInsert);
+    const { error } = await supabase.from("ChessHub_Games").insert(gamesToInsert);
 
-    if(error) {
+    if (error) {
       console.log("Error inserting games", error);
-      throw new Error('Failed to insert games');
+      throw new Error("Failed to insert games");
     }
 
     //Will convert to mutation later
-    queryClient.invalidateQueries({ queryKey: ['games'] });
+    queryClient.invalidateQueries({ queryKey: ["games"] });
   }
 
   const games = data ?? [];
@@ -128,13 +131,15 @@ export default function useGames() {
 
 async function fetchGames(userProfileId: number): Promise<Game[]> {
   const { data, error } = await supabase
-    .from('ChessHub_Games')
-    .select('id, playedAt, url, timeControl, createdAt, platform, pgn, pieces, moves, eco, variant, result, uuid')
-    .eq('userProfile', userProfileId)
-    .order('playedAt', { ascending: false });
+    .from("ChessHub_Games")
+    .select(
+      "id, playedAt, url, timeControl, createdAt, platform, pgn, pieces, moves, eco, variant, result, uuid, playerElo, opponentElo"
+    )
+    .eq("userProfile", userProfileId)
+    .order("playedAt", { ascending: false });
 
   if (error || !data) {
-    throw new Error('Failed to fetch games');
+    throw new Error("Failed to fetch games");
   }
 
   const games = data.map((game) => ({
@@ -151,8 +156,9 @@ async function fetchGames(userProfileId: number): Promise<Game[]> {
     result: game.result,
     platform: game.platform,
     uuid: game.uuid,
+    opponentElo: game.opponentElo,
+    playerElo: game.playerElo
   }));
 
   return games;
 }
-

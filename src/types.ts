@@ -64,6 +64,8 @@ export interface Game {
   result: Result;
   platform: string;
   uuid?: string;
+  opponentElo: number;
+  playerElo: number;
 }
 
 export interface StockfishAnalysisResult {

@@ -9,9 +9,7 @@ interface ResultsByOpponentRatingProps {
   platform: string;
 }
 
-export default function ResultsByOpponentRating(
-  props: ResultsByOpponentRatingProps
-) {
+export default function ResultsByOpponentRating(props: ResultsByOpponentRatingProps) {
   const wins: { ratingRange: number; games: number }[] = [];
   const losses: { ratingRange: number; games: number }[] = [];
   const draws: { ratingRange: number; games: number }[] = [];
@@ -19,10 +17,7 @@ export default function ResultsByOpponentRating(
 
   props.games.forEach((game) => {
     const parsedGame = parseGame(game.pgn);
-    const opponentElo =
-      game.pieces === "White"
-        ? parsedGame.tags?.BlackElo
-        : parsedGame.tags?.WhiteElo;
+    const opponentElo = game.pieces === "White" ? parsedGame.tags?.BlackElo : parsedGame.tags?.WhiteElo;
 
     if (!opponentElo || opponentElo === "?") {
       return;
@@ -33,11 +28,8 @@ export default function ResultsByOpponentRating(
       ratingRanges.push(ratingRange);
     }
 
-    const resultArray =
-      game.result === "Win" ? wins : game.result === "Loss" ? losses : draws;
-    const resultEntry = resultArray.find(
-      (entry) => entry.ratingRange === ratingRange
-    );
+    const resultArray = game.result === "Win" ? wins : game.result === "Loss" ? losses : draws;
+    const resultEntry = resultArray.find((entry) => entry.ratingRange === ratingRange);
     if (resultEntry) {
       resultEntry.games++;
     } else {
@@ -46,30 +38,18 @@ export default function ResultsByOpponentRating(
   });
 
   if (props.isLoading) {
-    return (
-      <>
-        <div>Loading...</div>
-        <Skeleton variant="rectangular" />
-      </>
-    );
+    return <Skeleton variant="rectangular" />;
   }
 
   ratingRanges.sort((a, b) => a - b);
 
   const lossesData = losses.map((loss) => loss.games);
-  const winsData = wins
-    .sort((a, b) => a.ratingRange - b.ratingRange)
-    .map((win) => win.games);
-  const drawsData = draws
-    .sort((a, b) => a.ratingRange - b.ratingRange)
-    .map((draw) => draw.games);
+  const winsData = wins.sort((a, b) => a.ratingRange - b.ratingRange).map((win) => win.games);
+  const drawsData = draws.sort((a, b) => a.ratingRange - b.ratingRange).map((draw) => draw.games);
 
   return (
     <Card>
-      <CardHeader
-        title="Results By Opponent Rating"
-        subheader={props.platform}
-      />
+      <CardHeader title="Results By Opponent Rating" subheader={props.platform} />
       <CardContent>
         <BarChart
           xAxis={[{ scaleType: "band", data: ratingRanges }]}

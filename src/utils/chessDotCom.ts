@@ -1,5 +1,5 @@
 import { Game, Variant } from "../types";
-import { parseGame } from '@mliebelt/pgn-parser'
+import { parseGame } from "@mliebelt/pgn-parser";
 import { getPlayerResult } from "./pgnUtils";
 
 interface RawChessDotComGame {
@@ -41,42 +41,50 @@ interface GameArchive {
   archivesUrl: string;
 }
 
-export const convertRawChessDotComGameToGame = (rawGame: RawChessDotComGame, username: string, userProfile: number): Game => {
+export const convertRawChessDotComGameToGame = (
+  rawGame: RawChessDotComGame,
+  username: string,
+  userProfile: number
+): Game => {
   const { white, timeClass, url, timeControl } = rawGame;
-  const pieces = white.username.toLowerCase() === username.toLowerCase() ? 'White': 'Black';
+  const pieces = white.username.toLowerCase() === username.toLowerCase() ? "White" : "Black";
 
   const rawPgn = parseGame(rawGame.pgn);
   const result = getPlayerResult(rawPgn, pieces);
-  
+
   return {
-    playedAt: new Date(Date.UTC(
-      rawPgn.tags?.UTCDate.year ?? 0, 
-      (rawPgn.tags?.UTCDate.month ?? 0) - 1, 
-      rawPgn.tags?.UTCDate.day, 
-      rawPgn.tags?.UTCTime.hour, 
-      rawPgn.tags?.UTCTime.minute, 
-      rawPgn.tags?.UTCTime.second)), 
+    playedAt: new Date(
+      Date.UTC(
+        rawPgn.tags?.UTCDate.year ?? 0,
+        (rawPgn.tags?.UTCDate.month ?? 0) - 1,
+        rawPgn.tags?.UTCDate.day,
+        rawPgn.tags?.UTCTime.hour,
+        rawPgn.tags?.UTCTime.minute,
+        rawPgn.tags?.UTCTime.second
+      )
+    ),
     url: url,
     timeControl: timeControl,
-    variant: timeClass[0].toUpperCase() + timeClass.slice(1) as Variant,
+    variant: (timeClass[0].toUpperCase() + timeClass.slice(1)) as Variant,
     userProfile: userProfile,
     pgn: rawGame.pgn,
     pieces: pieces,
     moves: Math.ceil(rawPgn.moves.length / 2),
     eco: rawPgn.tags?.ECO ?? "",
     result: result,
-    platform: 'chess.com',
+    platform: "chess.com",
     uuid: rawGame.uuid,
+    opponentElo: pieces === "White" ? rawGame.black.rating : rawGame.white.rating,
+    playerElo: pieces === "White" ? rawGame.white.rating : rawGame.black.rating
   };
-}
+};
 
 export const fetchGamesArchive = async (url: string): Promise<RawChessDotComGame[]> => {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
   const data = await response.json();
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ret: RawChessDotComGame[] = data.games.map((game: any) => {
     return {
@@ -103,14 +111,14 @@ export const fetchGamesArchive = async (url: string): Promise<RawChessDotComGame
 export const fetchGameArchiveList = async (username: string): Promise<GameArchive[]> => {
   const response = await fetch(`https://api.chess.com/pub/player/${username}/games/archives`);
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    throw new Error("Network response was not ok");
   }
 
   const json = await response.json();
   const archives: GameArchive[] = json.archives.map((url: string): GameArchive => {
     const matches = url.match(/\/(\d{4})\/(\d{2})$/);
     if (!matches) {
-      throw new Error('Unexpected URL format');
+      throw new Error("Unexpected URL format");
     }
 
     const [, year, month] = matches;
@@ -118,7 +126,7 @@ export const fetchGameArchiveList = async (username: string): Promise<GameArchiv
       date: `${year}-${month}`,
       year: parseInt(year),
       month: parseInt(month),
-      archivesUrl: url,
+      archivesUrl: url
     };
   });
 
