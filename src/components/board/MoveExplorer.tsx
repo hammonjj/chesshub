@@ -106,7 +106,7 @@ export default function MoveExplorer({
                     {gamesByMove.get(move)?.length}
                   </TableCell>
                   <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                    {+(gamesByMove.get(move)!.length / games.length).toFixed(2) * 100}%
+                    {(+(gamesByMove.get(move)!.length / games.length) * 100).toFixed(0)}%
                   </TableCell>
                   <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
                     <StatsBar stats={getWinLossDrawStats(gamesByMove.get(move)!, games[0].pieces)} exclude={14.99} />

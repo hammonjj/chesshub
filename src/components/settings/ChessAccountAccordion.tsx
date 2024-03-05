@@ -1,54 +1,40 @@
-//import { useState } from "react";
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import EditIcon from '@mui/icons-material/Edit';
-// import ConfirmDialog from "../dialogs/ConfirmDialog";
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import { Accordion, AccordionDetails, AccordionSummary, Button, IconButton, Typography } from "@mui/material";
+import { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ConfirmDialog from "../dialogs/ConfirmDialog";
+import useUser from "../../hooks/useUser";
+import { ExternalAccount } from "../../types";
+import { Accordion, AccordionDetails, AccordionSummary, IconButton, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EditExternalAccountDialog from "../dialogs/EditExternalAccountDialog";
 
 export default function ChessAccountAccordion() {
-  // const [expanded, setExpanded] = useState(false);
-  // const [addVehicleModalOpen, setAddVehicleModalOpen] = useState(false);
-  // const [editVehicleModalOpen, setEditVehicleModalOpen] = useState(false);
-  // const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [editExternalAccount, setEditExternalAccount] = useState<ExternalAccount>();
+  const [editExternalAccountModalOpen, setEditExternalAccountModalOpen] = useState(false);
+  const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  const { isLoading, externalAccounts, deleteExternalAccount, updateExternalAccount } = useUser();
 
-  // async function onVehicleSubmit(make: string, model: string, odometer: number) {
-  //   addVehicle({
-  //     make: make,
-  //     model: model,
-  //     id: undefined,
-  //     odometer: odometer,
-  //     is_primary: false
-  //   });
-
-  //   setAddVehicleModalOpen(false);
-  // }
-
-  // async function onVehicleUpdate(vehicle: Vehicle) {
-  //   updateVehicle(vehicle);
-  // } 
+  const [externalAccountToDelete, setExternalAccountToDelete] = useState<ExternalAccount>();
 
   return (
     <>
-      {/* <ConfirmDialog
+      <ConfirmDialog
         title={"Confirm Vehicle Deletion"}
-        children={`Are you sure you want to delete your 
-          ${vehicleToDelete ? vehicleToDelete.make + " " + vehicleToDelete.model : ""}? This cannot be undone.`}
+        children="Are you sure you want to delete your linked account? This cannot be undone."
         open={confirmDeleteModalOpen}
         setOpen={setConfirmDeleteModalOpen}
-        onConfirm={() => deleteVehicle(vehicleToDelete!.id!)} 
+        onConfirm={() => deleteExternalAccount(externalAccountToDelete!)}
       />
-      <EditVehicleDialog 
-        open={editVehicleModalOpen} 
-        vehicle={editVehicle} 
-        handleClose={() => setEditVehicleModalOpen(false)} 
-        onSubmit={onVehicleUpdate} 
-      />
-      <AddVehicleDialog 
-        open={addVehicleModalOpen} 
-        handleClose={() => setAddVehicleModalOpen(false)} 
-        onSubmit={onVehicleSubmit} 
-      />
-      <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)} >
+      {
+        <EditExternalAccountDialog
+          open={editExternalAccountModalOpen}
+          externalAccount={editExternalAccount}
+          handleClose={() => setEditExternalAccountModalOpen(false)}
+          onSubmit={updateExternalAccount}
+        />
+      }
+      <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary aria-controls="panel1d-content" id="chess-account-accordion" expandIcon={<ExpandMoreIcon />}>
           <Typography>Chess Accounts</Typography>
         </AccordionSummary>
@@ -57,22 +43,18 @@ export default function ChessAccountAccordion() {
             <Typography>Loading</Typography>
           </AccordionDetails>
         ) : (
-          vehicles?.map((vehicle) => (
-            <AccordionDetails 
-              key={vehicle.id}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+          externalAccounts?.map((externalAccount) => (
+            <AccordionDetails
+              key={externalAccount.accountName}
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
             >
-              <Typography>
-                {vehicle.make + ' ' + vehicle.model}
-              </Typography>
-              <Typography>
-                {vehicle.odometer}
-              </Typography>
+              <Typography>{externalAccount.platform}:</Typography>
+              <Typography>{externalAccount.accountName}</Typography>
               <IconButton
                 aria-label="edit"
                 onClick={() => {
-                  setEditVehicle(vehicle);
-                  setEditVehicleModalOpen(true);
+                  setEditExternalAccount(externalAccount);
+                  setEditExternalAccountModalOpen(true);
                 }}
               >
                 <EditIcon />
@@ -80,8 +62,8 @@ export default function ChessAccountAccordion() {
               <IconButton
                 aria-label="delete"
                 onClick={() => {
-                  setVehicleToDelete(vehicle);
-                  setConfirmDeleteModalOpen(true)
+                  setExternalAccountToDelete(externalAccount);
+                  setConfirmDeleteModalOpen(true);
                 }}
               >
                 <DeleteIcon />
@@ -89,10 +71,7 @@ export default function ChessAccountAccordion() {
             </AccordionDetails>
           ))
         )}
-        <AccordionDetails key={"save-button"}>
-          <Button variant="contained" onClick={() => setAddVehicleModalOpen(true)}>Add Vehicle</Button>
-        </AccordionDetails>
-      </Accordion> */}
+      </Accordion>
     </>
   );
 }
