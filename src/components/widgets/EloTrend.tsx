@@ -9,7 +9,7 @@ interface EloOverviewProps {
   isLoading: boolean;
 }
 
-export default function EloOverview(props: EloOverviewProps) {
+export default function EloTrend(props: EloOverviewProps) {
   const { data: chessDotComData, isLoading: chessDotComIsLoading } = useChessDotComPlayerStats();
   const { data: lichessData, isLoading: lichessIsLoading } = useLichessPlayerStats();
 
