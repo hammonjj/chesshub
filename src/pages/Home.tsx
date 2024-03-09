@@ -14,10 +14,10 @@ export default function Home() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Grid container spacing={1}>
-            <Grid item xs={4} md={6}>
+            <Grid item xs={12} md={6}>
               <EloTrend games={games} isLoading={isLoadingGames} variant="Rapid" />
             </Grid>
-            <Grid item xs={4} md={6}>
+            <Grid item xs={12} md={6}>
               <EloOverTime games={games} isLoading={isLoadingGames} platform="lichess" variant="Rapid" />
             </Grid>
           </Grid>
