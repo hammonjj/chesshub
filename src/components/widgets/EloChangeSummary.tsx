@@ -9,7 +9,7 @@ interface EloOverviewProps {
   isLoading: boolean;
 }
 
-export default function EloTrend(props: EloOverviewProps) {
+export default function EloChangeSummary(props: EloOverviewProps) {
   const { data: chessDotComData, isLoading: chessDotComIsLoading } = useChessDotComPlayerStats();
   const { data: lichessData, isLoading: lichessIsLoading } = useLichessPlayerStats();
 
@@ -45,11 +45,9 @@ export default function EloTrend(props: EloOverviewProps) {
   if (props.isLoading || chessDotComIsLoading || lichessIsLoading) {
     return (
       <Card>
-        <CardHeader title="ELO Changes" />
+        <CardHeader title="ELO Trends" />
         <CardContent>
-          <Skeleton variant="rectangular" width="100%" height={118} />
-          <Skeleton variant="text" width="60%" />
-          <Skeleton variant="text" width="60%" />
+          <Skeleton variant="rectangular" width="100%" height={130} />
         </CardContent>
       </Card>
     );
@@ -67,7 +65,7 @@ export default function EloTrend(props: EloOverviewProps) {
 
   return (
     <Card>
-      <CardHeader title="ELO Changes" subheader="lichess & chess.com" />
+      <CardHeader title="ELO Changes" subheader={props.variant} />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={6} container direction="column" spacing={2}>

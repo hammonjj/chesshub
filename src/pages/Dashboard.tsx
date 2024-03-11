@@ -4,18 +4,18 @@ import GameHistoryTable from "../components/tables/GameHistoryTable";
 import TimeControlsTable from "../components/tables/TimeControlsTable";
 import EloOverTime from "../components/widgets/EloOverTime";
 import useGames from "../hooks/useGames";
-import EloTrend from "../components/widgets/EloTrend";
+import EloChangeSummary from "../components/widgets/EloChangeSummary";
 
-export default function Home() {
+export default function Dashboard() {
   const { games, isLoadingGames } = useGames();
+
   return (
     <div style={{ marginBottom: "5rem", overflow: "hidden" }}>
-      <h1>Home</h1>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
-              <EloTrend games={games} isLoading={isLoadingGames} variant="Rapid" />
+              <EloChangeSummary games={games} isLoading={isLoadingGames} variant="Rapid" />
             </Grid>
             <Grid item xs={12} md={6}>
               <EloOverTime games={games} isLoading={isLoadingGames} platform="lichess" variant="Rapid" />

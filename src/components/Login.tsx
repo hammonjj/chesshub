@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient";
-import { Box, Button, Checkbox, Container, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  Divider,
+  FormControlLabel,
+  Grid,
+  Link,
+  TextField,
+  Typography
+} from "@mui/material";
 import useToast from "../hooks/useToast";
 import ForgotPasswordDialog from "./dialogs/ForgotPasswordDialog";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -130,6 +141,10 @@ export default function Login() {
             control={<Checkbox value={rememberMe} color="primary" onChange={(e) => setRememberMe(e.target.checked)} />}
             label="Remember me"
           />
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={!loginButtonEnabled}>
+            Sign In
+          </Button>
+          <Divider />
           <Button
             fullWidth
             variant="contained"
@@ -148,10 +163,7 @@ export default function Login() {
           >
             Sign in with Facebook
           </Button>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={!loginButtonEnabled}>
-            Sign In
-          </Button>
-          <Grid container>
+          <Grid container style={{ marginTop: "1rem" }}>
             <Grid item xs>
               <Link
                 variant="body2"

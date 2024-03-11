@@ -20,6 +20,7 @@ export default function EloOverTime(props: EloOverTimeProps) {
   const filteredGames = props.games.filter(
     (game) => game.platform === props.platform && game.variant === props.variant
   );
+
   const sortedGames = filteredGames.sort((a, b) => new Date(a.playedAt).getTime() - new Date(b.playedAt).getTime());
   let currentWeekStart = sortedGames.length > 0 ? startOfWeek(new Date(sortedGames[0].playedAt)) : new Date();
 
@@ -49,7 +50,7 @@ export default function EloOverTime(props: EloOverTimeProps) {
               })
             }
           ]}
-          series={[{ data: gameEloData, stack: "A", label: "ELO", color: "red" }]}
+          series={[{ data: gameEloData, stack: "A", label: "Lichess", color: "red" }]}
           height={300}
         />
       </CardContent>

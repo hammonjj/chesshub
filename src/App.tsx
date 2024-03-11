@@ -12,7 +12,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import AccessControl from "./pages/AccessControl";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import Analysis from "./pages/Analysis";
 
 const queryClient = new QueryClient({
@@ -37,7 +37,7 @@ function App() {
                   index
                   element={
                     <ProtectedRoute>
-                      <Home />
+                      <Dashboard />
                     </ProtectedRoute>
                   }
                 />

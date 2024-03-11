@@ -74,19 +74,26 @@ export default function Explorer() {
       return false;
     }
 
-    // try {
-    //   const audio = new Audio("/move.mp3");
-    //   audio.play();
-    // } catch (error) {
-    //   console.error("Error playing audio:", error);
-    // }
+    setArrows([]);
+    playPieceDropAudio();
 
     return true;
   }
 
+  function playPieceDropAudio() {
+    try {
+      const audio = new Audio("/move.mp3");
+      audio.play();
+    } catch (error) {
+      console.error("Error playing audio:", error);
+    }
+  }
+
   function onMoveExplorerClick(move: string) {
     game.move(move);
+    setArrows([]);
     setFen(game.fen());
+    playPieceDropAudio();
   }
 
   const onMoveHover = (moveNotation: string) => {

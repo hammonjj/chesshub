@@ -18,11 +18,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 // import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import { CircularProgress } from "@mui/material";
-
-import Home from "../pages/Home";
+import Dashboard from "../pages/Dashboard";
 import Settings from "../pages/Settings";
-import useGames from "../hooks/useGames";
 import Explorer from "../pages/Explorer";
 import { useNavigate } from "react-router-dom";
 import Insights from "../pages/Insights";
@@ -33,9 +30,7 @@ const miniDrawerWidth = 56;
 
 export default function LoggedInNavigationBar() {
   const nav = useNavigate();
-  const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
   const [open] = useState(false);
-  const [fetchingExternalData, setFetchingExternalData] = useState(false);
 
   // const handleDrawerOpen = () => {
   //   setOpen(true);
@@ -46,18 +41,12 @@ export default function LoggedInNavigationBar() {
   // };
 
   const pages = [
-    { text: "Home", icon: <HomeIcon />, component: <Home />, route: "/" },
+    { text: "Home", icon: <HomeIcon />, component: <Dashboard />, route: "/" },
     { text: "Insights", icon: <LeaderboardIcon />, component: <Insights />, route: "/insights" },
     { text: "Explorer", icon: <DeviceHubIcon />, component: <Explorer />, route: "/explorer" },
     { text: "Analysis", icon: <InsightsIcon />, component: <Analysis />, route: "/analysis" },
     { text: "Settings", icon: <SettingsIcon />, component: <Settings />, route: "/settings" }
   ];
-
-  async function handleRefetchClick() {
-    setFetchingExternalData(true);
-    await syncExternalAccountsToLocalDb();
-    setFetchingExternalData(false);
-  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -71,9 +60,6 @@ export default function LoggedInNavigationBar() {
               Chess Hub
             </Typography>
           </div>
-          <button onClick={handleRefetchClick} disabled={fetchingExternalData || isLoadingGames}>
-            {fetchingExternalData ? <CircularProgress size={16} /> : "Refetch"}
-          </button>
         </Toolbar>
       </AppBar>
       <Drawer
