@@ -66,6 +66,16 @@ export default function Login() {
     nav(from, { replace: true });
   }
 
+  async function signInWithProvider(provider: "google" | "facebook") {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider
+    });
+
+    if (error) {
+      showError(`Error with ${provider} login: ${error.message}`);
+    }
+  }
+
   return (
     <Container component="main" maxWidth="sm">
       <ForgotPasswordDialog open={openPasswordResetDialog} handleClose={handleClosePasswordResetDialog} />
@@ -120,6 +130,24 @@ export default function Login() {
             control={<Checkbox value={rememberMe} color="primary" onChange={(e) => setRememberMe(e.target.checked)} />}
             label="Remember me"
           />
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+            onClick={() => signInWithProvider("google")}
+          >
+            Sign in with Google
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            sx={{ mt: 1 }}
+            onClick={() => signInWithProvider("facebook")}
+          >
+            Sign in with Facebook
+          </Button>
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={!loginButtonEnabled}>
             Sign In
           </Button>

@@ -1,34 +1,44 @@
-import { useState } from 'react';
-import { supabase } from '../utils/supabaseClient';
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
-import useToast from '../hooks/useToast';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { supabase } from "../utils/supabaseClient";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import useToast from "../hooks/useToast";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [signUpButtonEnabled, setSignUpButtonEnabled] = useState(true);
 
   const { showError } = useToast();
-  
-  async function onSignUp(event: { preventDefault: () => void; }) {
+
+  async function onSignUp(event: { preventDefault: () => void }) {
     event.preventDefault();
-      setSignUpButtonEnabled(false);
+    setSignUpButtonEnabled(false);
 
-      const { error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-      });
+    const { error } = await supabase.auth.signUp({
+      email: email,
+      password: password
+    });
 
-      if(error) {
-        showError("Unable to sign up: " + error.message);
-      } else {
-        navigate('validate-account');
-      }
+    if (error) {
+      showError("Unable to sign up: " + error.message);
+    } else {
+      navigate("validate-account");
+    }
 
-      setSignUpButtonEnabled(true);
+    setSignUpButtonEnabled(true);
+  }
+
+  async function signInWithProvider(provider: "google" | "facebook") {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider
+    });
+
+    if (error) {
+      showError(`Error with ${provider} login: ${error.message}`);
+    }
   }
 
   return (
@@ -42,12 +52,30 @@ export default function SignUp() {
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3 }}
+          onClick={() => signInWithProvider("google")}
+        >
+          Sign up with Google
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          color="secondary"
+          sx={{ mt: 1 }}
+          onClick={() => signInWithProvider("facebook")}
+        >
+          Sign up with Facebook
+        </Button>
         <Box component="form" onSubmit={onSignUp} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -63,7 +91,7 @@ export default function SignUp() {
               setEmail(e.target.value);
             }}
             inputProps={{
-              autoCapitalize: 'none',
+              autoCapitalize: "none"
             }}
           />
           <TextField
@@ -101,11 +129,13 @@ export default function SignUp() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={!signUpButtonEnabled || 
-              (email === '' || 
-              password === '' || 
-              passwordConfirmation === '' || 
-              password !== passwordConfirmation)}
+            disabled={
+              !signUpButtonEnabled ||
+              email === "" ||
+              password === "" ||
+              passwordConfirmation === "" ||
+              password !== passwordConfirmation
+            }
           >
             Sign Up
           </Button>
