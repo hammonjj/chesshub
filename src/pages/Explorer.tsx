@@ -15,6 +15,7 @@ export interface ExplorerFilterState {
   variant: "All" | "Bullet" | "Rapid" | "Blitz" | "Classical";
   outcome: "All" | "Win" | "Loss" | "Draw";
   flipBoard: boolean;
+  betweenDates?: { startDate: Date; endDate: Date };
 }
 
 export type ExplorerFilterAction =
@@ -22,14 +23,16 @@ export type ExplorerFilterAction =
   | { type: "SET_DATE"; payload: string }
   | { type: "SET_VARIANT"; payload: "All" | "Bullet" | "Rapid" | "Blitz" | "Classical" }
   | { type: "SET_OUTCOME"; payload: "All" | "Win" | "Loss" | "Draw" }
-  | { type: "FLIP_BOARD" };
+  | { type: "FLIP_BOARD" }
+  | { type: "SET_CUSTOM_DATE_RANGE"; payload: { startDate: Date; endDate: Date } };
 
 const initialState: ExplorerFilterState = {
   color: "White",
   date: "all-time",
   variant: "All",
   outcome: "All",
-  flipBoard: false
+  flipBoard: false,
+  betweenDates: undefined
 };
 
 const filterReducer = (state: ExplorerFilterState, action: ExplorerFilterAction) => {
@@ -44,6 +47,15 @@ const filterReducer = (state: ExplorerFilterState, action: ExplorerFilterAction)
       return { ...state, outcome: action.payload };
     case "FLIP_BOARD":
       return { ...state, flipBoard: !state.flipBoard };
+    case "SET_CUSTOM_DATE_RANGE":
+      //This is pretty gross. I need to eventually update this to just give the reducer explicit start and end dates
+      //instead of worrying about the string values for month, week, etc.
+      return {
+        ...state,
+        date: "custom",
+        betweenDates: { startDate: action.payload.startDate, endDate: action.payload.endDate }
+      };
+
     default:
       return state;
   }
@@ -51,7 +63,6 @@ const filterReducer = (state: ExplorerFilterState, action: ExplorerFilterAction)
 
 export default function Explorer() {
   const { games, isLoadingGames } = useGames();
-
   const [state, dispatch] = useReducer(filterReducer, initialState);
   const [game, setGame] = useState(new Chess());
   const [fen, setFen] = useState(game.fen());
@@ -61,7 +72,16 @@ export default function Explorer() {
     return <Chessboard />;
   }
 
-  const firstFilteredGames = applyGameFilters(games, state.color, state.variant, state.outcome, state.date);
+  const firstFilteredGames = applyGameFilters(
+    games,
+    state.color,
+    state.variant,
+    state.outcome,
+    state.date,
+    state.betweenDates?.startDate,
+    state.betweenDates?.endDate
+  );
+
   const filteredGames =
     game.fen() === DefaultFen ? firstFilteredGames : findMatchingGamesByPgn(firstFilteredGames, game.pgn());
 

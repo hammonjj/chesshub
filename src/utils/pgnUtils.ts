@@ -93,10 +93,12 @@ export function applyGameFilters(
   pieces: Pieces,
   variant: Variant | "All",
   result: Result | "All",
-  dateRange: string
+  dateRange: string,
+  startDate?: Date,
+  endDate?: Date
 ): Game[] {
   return games.filter((game) => {
-    if (!applyDateFilter(game, dateRange)) {
+    if (!applyDateFilter(game, dateRange, startDate, endDate)) {
       return false;
     }
 
@@ -116,7 +118,7 @@ export function applyGameFilters(
   });
 }
 
-export function applyDateFilter(game: Game, dateRange: string) {
+export function applyDateFilter(game: Game, dateRange: string, startDate?: Date, endDate?: Date) {
   if (dateRange === "all-time") {
     return true;
   }
@@ -131,6 +133,9 @@ export function applyDateFilter(game: Game, dateRange: string) {
   }
   if (dateRange === "this-year" && game.playedAt > new Date(new Date().setFullYear(new Date().getFullYear() - 1))) {
     return true;
+  }
+  if (dateRange === "custom" && startDate && endDate) {
+    return game.playedAt >= startDate && game.playedAt <= endDate;
   }
 
   return false;
