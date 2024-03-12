@@ -49,3 +49,22 @@ https://lichess.org/api#tag/Analysis
 https://github.com/alan2207/bulletproof-react?tab=readme-ov-file
 https://www.material-react-table.com/
 https://github.com/bvaughn/react-error-boundary
+
+## Game Phases
+
+Should I investigate using a cloud function to parse/analyze the games to get these stats consistently?
+
+### Middlegame
+
+Starts when:
+
+- There are 10 or fewer major or minors OR
+- The back rank is sparse OR
+- The white and black pieces are sufficiently mixed on the board
+- This can likely be part of the back rank is sparse
+
+### Endgame
+
+Late game starts when there are 6 or fewer major or minor pieces
+
+https://github.com/lichess-org/scalachess/blob/master/src/main/scala/Divider.scala
