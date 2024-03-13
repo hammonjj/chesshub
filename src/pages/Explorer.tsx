@@ -67,6 +67,7 @@ export default function Explorer() {
   const [game, setGame] = useState(new Chess());
   const [fen, setFen] = useState(game.fen());
   const [arrows, setArrows] = useState<Array<[Square, Square]>>([]);
+  const [customStyles, setCustomStyles] = useState<{ [key: string]: React.CSSProperties }>({});
 
   if (isLoadingGames) {
     return <Chessboard />;
@@ -95,6 +96,7 @@ export default function Explorer() {
     }
 
     setArrows([]);
+    setCustomStyles({});
     playPieceDropAudio();
 
     return true;
@@ -112,6 +114,7 @@ export default function Explorer() {
   function onMoveExplorerClick(move: string) {
     game.move(move);
     setArrows([]);
+    setCustomStyles({});
     setFen(game.fen());
     playPieceDropAudio();
   }
@@ -138,6 +141,22 @@ export default function Explorer() {
     setFen(game.fen());
   }
 
+  function onSquareRightClick(square: Square) {
+    const newStyles = {
+      ...customStyles,
+      [square]: {
+        backgroundColor: "rgba(255, 0, 0, 0.5)"
+      }
+    };
+    setCustomStyles(newStyles);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function onSquareLeftClick(_square: Square) {
+    setCustomStyles({});
+    setArrows([]);
+  }
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
@@ -146,6 +165,9 @@ export default function Explorer() {
           onPieceDrop={onPieceDrop}
           customArrows={arrows}
           boardOrientation={state.flipBoard ? "black" : "white"}
+          customSquareStyles={customStyles}
+          onSquareRightClick={onSquareRightClick}
+          onSquareClick={onSquareLeftClick}
         />
       </Grid>
       <Grid item xs={12} md={4} order={{ xs: 1, md: 2 }}>

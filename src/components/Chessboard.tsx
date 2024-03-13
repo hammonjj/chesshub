@@ -12,18 +12,35 @@ interface ChessboardProps {
 export default function Chessboard(props: ChessboardProps) {
   const [boardOrientation] = useState<"white" | "black">("white");
   const [arrows, setArrows] = useState<Array<[Square, Square]>>([]);
-  console.log("ChessboardProps", props.fen);
+  const [customStyles, setCustomStyles] = useState<{ [key: string]: React.CSSProperties }>({});
 
-  function onPieceDrop(sourceSquare: Square, targetSquare: Square) {
-    console.log("onPieceDrop", sourceSquare, targetSquare);
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function onPieceDrop(_sourceSquare: Square, _targetSquare: Square) {
     if (!props.onPieceDrop()) {
       return false;
     }
 
     setArrows([]);
+    setCustomStyles({});
     playPieceDropAudio();
     return true;
+  }
+
+  function onSquareRightClick(square: Square) {
+    const newStyles = {
+      ...customStyles,
+      [square]: {
+        backgroundColor: "rgba(255, 0, 0, 0.5)"
+      }
+    };
+
+    setCustomStyles(newStyles);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function onSquareLeftClick(_square: Square) {
+    setCustomStyles({});
+    setArrows([]);
   }
 
   if (props.isLoading) {
@@ -36,6 +53,8 @@ export default function Chessboard(props: ChessboardProps) {
       onPieceDrop={onPieceDrop}
       boardOrientation={boardOrientation}
       customArrows={arrows}
+      onSquareClick={onSquareLeftClick}
+      onSquareRightClick={onSquareRightClick}
     />
   );
 }
