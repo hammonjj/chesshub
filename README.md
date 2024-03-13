@@ -1,5 +1,11 @@
 # ChessHub
 
+## Random Notes
+
+Need to implement some form of caching in the game explorer parsing
+
+- Large numbers of games are really going to drag down the performance of this component
+
 ## API Calls
 
 ### Chess.com
