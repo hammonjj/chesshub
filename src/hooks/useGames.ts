@@ -20,18 +20,7 @@ export default function useGames() {
       return;
     }
 
-    // Will need to move this around to ensure all games are analyzed
-    // const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
-    //   body: JSON.stringify({ name: "James", gameId: 123 })
-    // });
-
-    // if (functionError) {
-    //   console.log("Error invoking function", functionError);
-    // } else {
-    //   console.log("Function invoked successfully", data);
-    // }
-
-    const promises: Promise<void>[] = [];
+    const promises: Promise<Game[] | undefined>[] = [];
     const chessComAccount = externalAccounts.find((account) => account.platform === "chess.com");
     if (chessComAccount) {
       promises.push(syncChessDotComGames(chessComAccount));
@@ -42,7 +31,27 @@ export default function useGames() {
       promises.push(syncLichessGames(lichessAccount));
     }
 
-    await Promise.all(promises);
+    const gamesArrays = await Promise.all(promises);
+
+    // Directly extract game IDs, filtering out any undefined values in the process
+    const gameIdsToInsert: number[] = gamesArrays
+      .filter((gamesArray): gamesArray is Game[] => gamesArray !== undefined)
+      .flat()
+      .map((game) => game.id)
+      .filter((id): id is number => id !== undefined);
+
+    console.log("Game IDs to Insert", gameIdsToInsert);
+
+    // Will uncomment this once the function is ready
+    // const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
+    //   body: JSON.stringify({  gameIds: gameIdsToInsert })
+    // });
+
+    // if (functionError) {
+    //   console.log("Error invoking function", functionError);
+    // } else {
+    //   console.log("Function invoked successfully", data);
+    // }
   }
 
   async function syncChessDotComGames(chessComAccount: ExternalAccount) {
@@ -103,6 +112,8 @@ export default function useGames() {
     } catch (error) {
       console.error("Failed to sync external accounts:", error);
     }
+
+    return gamesToInsert;
   }
 
   async function syncLichessGames(lichessAccount: ExternalAccount) {
@@ -135,6 +146,7 @@ export default function useGames() {
 
     //Will convert to mutation later
     queryClient.invalidateQueries({ queryKey: ["games"] });
+    return gamesToInsert;
   }
 
   const games = data ?? [];
