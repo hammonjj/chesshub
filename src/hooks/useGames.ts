@@ -20,6 +20,17 @@ export default function useGames() {
       return;
     }
 
+    // Will need to move this around to ensure all games are analyzed
+    // const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
+    //   body: JSON.stringify({ name: "James", gameId: 123 })
+    // });
+
+    // if (functionError) {
+    //   console.log("Error invoking function", functionError);
+    // } else {
+    //   console.log("Function invoked successfully", data);
+    // }
+
     const promises: Promise<void>[] = [];
     const chessComAccount = externalAccounts.find((account) => account.platform === "chess.com");
     if (chessComAccount) {
@@ -68,7 +79,10 @@ export default function useGames() {
         }
       }
 
-      gamesToInsert = gamesToInsert.filter((game) => !data?.some((existingGame) => existingGame.uuid === game.uuid));
+      gamesToInsert = gamesToInsert.filter(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (game) => !data?.some((existingGame: any) => existingGame.uuid === game.uuid)
+      );
 
       if (!gamesToInsert.length) {
         console.log("No new Chess.com games to insert");
