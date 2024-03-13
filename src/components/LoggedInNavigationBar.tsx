@@ -9,7 +9,8 @@ import {
   AppBar,
   Typography,
   Box,
-  ListItemButton
+  ListItemButton,
+  CircularProgress
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import InsightsIcon from "@mui/icons-material/Insights";
@@ -24,6 +25,7 @@ import Explorer from "../pages/Explorer";
 import { useNavigate } from "react-router-dom";
 import Insights from "../pages/Insights";
 import Analysis from "../pages/Analysis";
+import useGames from "../hooks/useGames";
 
 const drawerWidth = 240;
 const miniDrawerWidth = 56;
@@ -31,6 +33,8 @@ const miniDrawerWidth = 56;
 export default function LoggedInNavigationBar() {
   const nav = useNavigate();
   const [open] = useState(false);
+  const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
+  const [fetchingExternalData, setFetchingExternalData] = useState(false);
 
   // const handleDrawerOpen = () => {
   //   setOpen(true);
@@ -39,6 +43,12 @@ export default function LoggedInNavigationBar() {
   // const handleDrawerClose = () => {
   //   setOpen(false);
   // };
+
+  async function handleRefetchClick() {
+    setFetchingExternalData(true);
+    await syncExternalAccountsToLocalDb();
+    setFetchingExternalData(false);
+  }
 
   const pages = [
     { text: "Home", icon: <HomeIcon />, component: <Dashboard />, route: "/" },
@@ -60,6 +70,9 @@ export default function LoggedInNavigationBar() {
               Chess Hub
             </Typography>
           </div>
+          <button onClick={handleRefetchClick} disabled={fetchingExternalData || isLoadingGames}>
+            {fetchingExternalData ? <CircularProgress size={16} /> : "Refetch"}
+          </button>
         </Toolbar>
       </AppBar>
       <Drawer
