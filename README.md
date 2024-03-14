@@ -74,3 +74,9 @@ Starts when:
 Late game starts when there are 6 or fewer major or minor pieces
 
 https://github.com/lichess-org/scalachess/blob/master/src/main/scala/Divider.scala
+
+# OAuth Providers
+
+## Supabase Docs
+
+https://supabase.com/docs/guides/auth/social-login/auth-google#configure-your-services-id
