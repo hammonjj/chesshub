@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { parseGame } from "@mliebelt/pgn-parser";
-import { Game } from "../../types"; // Make sure this path matches your actual types
+import { Game } from "../../types";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { getWinLossDrawStats } from "../../utils/pgnUtils"; // Adjust this path as necessary
-import StatsBar from "../StatsBar"; // Adjust this path as necessary
+import { getWinLossDrawStats } from "../../utils/pgnUtils";
+import StatsBar from "../StatsBar";
 
 interface MoveListProps {
   games: Game[];
