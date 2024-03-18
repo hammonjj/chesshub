@@ -33,6 +33,7 @@ export default function LoggedInNavigationBar() {
   const [open] = useState(false);
   const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
   const [fetchingExternalData, setFetchingExternalData] = useState(false);
+  //const isMobile = useMediaQuery("(max-width:600px)");
 
   async function handleRefetchClick() {
     setFetchingExternalData(true);

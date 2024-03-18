@@ -2,7 +2,7 @@ import { parseGame } from "@mliebelt/pgn-parser";
 import { Game } from "../../types";
 import { useEffect, useState } from "react";
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+//import SearchIcon from "@mui/icons-material/Search";
 import { getWinLossDrawStats } from "../../utils/pgnUtils";
 import StatsBar from "../StatsBar";
 
@@ -81,9 +81,9 @@ export default function MoveExplorer({
                   %
                 </TableCell>
                 <TableCell align="right">Result</TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <SearchIcon />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -111,9 +111,9 @@ export default function MoveExplorer({
                   <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
                     <StatsBar stats={getWinLossDrawStats(gamesByMove.get(move)!, games[0].pieces)} exclude={14.99} />
                   </TableCell>
-                  <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                  {/* <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
                     <SearchIcon />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
