@@ -15,8 +15,6 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import InsightsIcon from "@mui/icons-material/Insights";
 import SettingsIcon from "@mui/icons-material/Settings";
-// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-// import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import Dashboard from "../pages/Dashboard";
@@ -35,14 +33,6 @@ export default function LoggedInNavigationBar() {
   const [open] = useState(false);
   const { syncExternalAccountsToLocalDb, isLoadingGames } = useGames();
   const [fetchingExternalData, setFetchingExternalData] = useState(false);
-
-  // const handleDrawerOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const handleDrawerClose = () => {
-  //   setOpen(false);
-  // };
 
   async function handleRefetchClick() {
     setFetchingExternalData(true);
@@ -63,9 +53,6 @@ export default function LoggedInNavigationBar() {
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            {/* <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
-              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton> */}
             <Typography variant="h6" noWrap component="div">
               Chess Hub
             </Typography>
@@ -114,7 +101,6 @@ export default function LoggedInNavigationBar() {
         component="main"
         sx={{
           flexGrow: 1,
-
           width: `calc(100% - ${open ? drawerWidth : miniDrawerWidth}px)`
         }}
       >

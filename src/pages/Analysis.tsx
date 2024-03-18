@@ -54,7 +54,6 @@ export default function Analysis() {
 
   function onPieceDrop(sourceSquare: Square, targetSquare: Square) {
     const move = game.move({ from: sourceSquare, to: targetSquare });
-
     //console.log("move.san", move.san);
     //console.log("nextMoveSan", moves[currentMoveNumber]?.notation);
 
