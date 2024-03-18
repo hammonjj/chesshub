@@ -81,11 +81,12 @@ export default function GameHistoryTable() {
                       <TableCell align="right">{game.eco}</TableCell>
                     </>
                   )}
-                  <TableCell align="right">
+                  <TableCell align="right" onClick={(event: React.MouseEvent) => event.stopPropagation()}>
                     <a
                       href={game.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(event) => event.stopPropagation()}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <OpenInNewIcon style={{ color: "currentColor" }} />
