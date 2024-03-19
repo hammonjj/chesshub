@@ -13,8 +13,10 @@ export default function EloChangeSummary(props: EloOverviewProps) {
   const { data: chessDotComData, isLoading: chessDotComIsLoading } = useChessDotComPlayerStats();
   const { data: lichessData, isLoading: lichessIsLoading } = useLichessPlayerStats();
 
-  const currentRatingChessDotCom = chessDotComData?.chessRapid?.last.rating;
-  const currentRatingLichess = lichessData?.perfs.rapid.rating;
+  const currentRatingChessDotCom =
+    props.variant === "Rapid" ? chessDotComData?.chessRapid?.last.rating : chessDotComData?.chessBlitz?.last.rating;
+  const currentRatingLichess =
+    props.variant === "Rapid" ? lichessData?.perfs.rapid.rating : lichessData?.perfs.blitz.rating;
 
   const calculateRatingChange = (dateSubtractFunction: (date: Date) => void, platform: string) => {
     const date = new Date();
