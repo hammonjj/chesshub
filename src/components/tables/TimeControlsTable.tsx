@@ -51,11 +51,11 @@ export default function TimeControlsTable() {
           <TableRow>
             <TableCell sx={{ whiteSpace: "nowrap", width: "5%" }} />
             <TableCell sx={{ whiteSpace: "nowrap", width: "10%" }}>Variant</TableCell>
-            <TableCell align="right" sx={{ whiteSpace: "nowrap", width: "10%" }}>
-              Games
-            </TableCell>
             {!isMobile && (
               <>
+                <TableCell align="right" sx={{ whiteSpace: "nowrap", width: "10%" }}>
+                  Games
+                </TableCell>
                 <TableCell align="right" sx={{ whiteSpace: "nowrap", width: "10%" }}>
                   W
                 </TableCell>

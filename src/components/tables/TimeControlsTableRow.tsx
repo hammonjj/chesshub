@@ -37,11 +37,11 @@ const TimeControlsTableRow: React.FC<TimeControlsTableRow> = ({ row }) => {
         <TableCell component="th" scope="row">
           {row.variant}
         </TableCell>
-        <TableCell align="right" style={{ padding: padding }}>
-          {row.totalGames}
-        </TableCell>
         {!isMobile && (
           <>
+            <TableCell align="right" style={{ padding: padding }}>
+              {row.totalGames}
+            </TableCell>
             <TableCell align="right" style={{ padding: padding }}>
               {row.wins}
             </TableCell>
