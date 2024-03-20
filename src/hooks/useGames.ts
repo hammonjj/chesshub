@@ -19,7 +19,7 @@ export default function useGames() {
     if (!externalAccounts.length || !userProfile) {
       return;
     }
-
+    console.log("syncExternalAccountsToLocalDb called");
     const promises: Promise<Game[] | undefined>[] = [];
     const chessComAccount = externalAccounts.find((account) => account.platform === "chess.com");
     if (chessComAccount) {
