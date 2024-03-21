@@ -19,8 +19,8 @@ export default function useGames() {
     if (!externalAccounts.length || !userProfile) {
       return;
     }
-    console.log("syncExternalAccountsToLocalDb called");
-    const promises: Promise<Game[] | undefined>[] = [];
+
+    const promises: Promise<number[] | undefined>[] = [];
     const chessComAccount = externalAccounts.find((account) => account.platform === "chess.com");
     if (chessComAccount) {
       promises.push(syncChessDotComGames(chessComAccount));
@@ -32,29 +32,24 @@ export default function useGames() {
     }
 
     const gamesArrays = await Promise.all(promises);
+    if (!gamesArrays.length) {
+      return;
+    }
 
-    // Directly extract game IDs, filtering out any undefined values in the process
-    const gameIdsToInsert: number[] = gamesArrays
-      .filter((gamesArray): gamesArray is Game[] => gamesArray !== undefined)
-      .flat()
-      .map((game) => game.id)
-      .filter((id): id is number => id !== undefined);
+    const combinedArrays = gamesArrays.flat();
 
-    console.log("Game IDs to Insert", gameIdsToInsert);
+    const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
+      body: JSON.stringify({ gameIds: combinedArrays })
+    });
 
-    // Will uncomment this once the function is ready
-    // const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
-    //   body: JSON.stringify({  gameIds: gameIdsToInsert })
-    // });
-
-    // if (functionError) {
-    //   console.log("Error invoking function", functionError);
-    // } else {
-    //   console.log("Function invoked successfully", data);
-    // }
+    if (functionError) {
+      console.log("Error invoking function", functionError);
+    } else {
+      console.log("Function invoked successfully", data);
+    }
   }
 
-  async function syncChessDotComGames(chessComAccount: ExternalAccount) {
+  async function syncChessDotComGames(chessComAccount: ExternalAccount): Promise<number[]> {
     console.log("Syncing Chess.com games");
     const mostRecentChessComGame = data?.find((game) => game.platform === "chess.com");
     if (!mostRecentChessComGame) {
@@ -95,28 +90,29 @@ export default function useGames() {
 
       if (!gamesToInsert.length) {
         console.log("No new Chess.com games to insert");
-        return;
+        return [];
       } else {
         console.log(`Found ${gamesToInsert.length} Chess.com games to insert`);
       }
 
-      const { error } = await supabase.from("ChessHub_Games").insert(gamesToInsert);
-
+      const { error, data: gamesInserted } = await supabase.from("ChessHub_Games").insert(gamesToInsert).select();
       if (error) {
         console.log("Error inserting games", error);
         throw new Error("Failed to insert games");
       }
 
+      const insertedGameIds = gamesInserted?.map((game) => game.id);
       //Will convert to mutation later
       queryClient.invalidateQueries({ queryKey: ["games"] });
+      return insertedGameIds ?? [];
     } catch (error) {
       console.error("Failed to sync external accounts:", error);
     }
 
-    return gamesToInsert;
+    return [];
   }
 
-  async function syncLichessGames(lichessAccount: ExternalAccount) {
+  async function syncLichessGames(lichessAccount: ExternalAccount): Promise<number[]> {
     console.log("Syncing Lichess games");
 
     const mostRecentGame = data?.find((game) => game.platform === "lichess");
@@ -132,12 +128,12 @@ export default function useGames() {
 
     if (!gamesToInsert.length) {
       console.log("No new Lichess games to insert");
-      return;
+      return [];
     } else {
       console.log(`Found ${gamesToInsert.length} Lichess games to insert`);
     }
 
-    const { error } = await supabase.from("ChessHub_Games").insert(gamesToInsert);
+    const { error, data: gamesInserted } = await supabase.from("ChessHub_Games").insert(gamesToInsert).select();
 
     if (error) {
       console.log("Error inserting games", error);
@@ -146,7 +142,8 @@ export default function useGames() {
 
     //Will convert to mutation later
     queryClient.invalidateQueries({ queryKey: ["games"] });
-    return gamesToInsert;
+    const insertedGameIds = gamesInserted?.map((game) => game.id);
+    return insertedGameIds;
   }
 
   const games = data ?? [];
