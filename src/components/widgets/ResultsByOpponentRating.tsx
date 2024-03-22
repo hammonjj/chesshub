@@ -38,7 +38,14 @@ export default function ResultsByOpponentRating(props: ResultsByOpponentRatingPr
   });
 
   if (props.isLoading) {
-    return <Skeleton variant="rectangular" />;
+    return (
+      <Card>
+        <CardHeader title="Results By Opponent Rating" />
+        <CardContent>
+          <Skeleton variant="rectangular" width="100%" height={300} />
+        </CardContent>
+      </Card>
+    );
   }
 
   ratingRanges.sort((a, b) => a - b);

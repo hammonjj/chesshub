@@ -38,15 +38,22 @@ export default function useGames() {
 
     const combinedArrays = gamesArrays.flat();
 
-    const { data, error: functionError } = await supabase.functions.invoke("process-pgn", {
-      body: JSON.stringify({ gameIds: combinedArrays })
+    const processingPromises = combinedArrays.map(async (gameId) => {
+      const { data, error } = await supabase.functions.invoke("process-pgn", {
+        body: JSON.stringify({ gameIds: [gameId] })
+      });
+
+      if (error) {
+        console.error("Error invoking function for game", gameId, error);
+        return undefined;
+      } else {
+        console.log("Function invoked successfully for game", gameId, data);
+        return data;
+      }
     });
 
-    if (functionError) {
-      console.log("Error invoking function", functionError);
-    } else {
-      console.log("Function invoked successfully", data);
-    }
+    const results = await Promise.all(processingPromises);
+    console.log("All games processed", results);
   }
 
   async function syncChessDotComGames(chessComAccount: ExternalAccount): Promise<number[]> {
@@ -156,7 +163,7 @@ async function fetchGames(userProfileId: number): Promise<Game[]> {
   const { data, error } = await supabase
     .from("ChessHub_Games")
     .select(
-      "id, playedAt, url, timeControl, createdAt, platform, pgn, pieces, moves, eco, variant, result, uuid, playerElo, opponentElo"
+      "id, playedAt, url, timeControl, createdAt, platform, pgn, pieces, moves, eco, variant, result, uuid, playerElo, opponentElo, metadata"
     )
     .eq("userProfile", userProfileId)
     .order("playedAt", { ascending: false });
@@ -180,7 +187,8 @@ async function fetchGames(userProfileId: number): Promise<Game[]> {
     platform: game.platform,
     uuid: game.uuid,
     opponentElo: game.opponentElo,
-    playerElo: game.playerElo
+    playerElo: game.playerElo,
+    metadata: game.metadata
   }));
 
   return games;

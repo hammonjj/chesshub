@@ -5,6 +5,7 @@ import { useReducer } from "react";
 import InsightsFilters from "../components/filters/InsightsFilters";
 import { applyDateFilter } from "../utils/pgnUtils";
 import WinRateByColor from "../components/widgets/WinRateByColor";
+import ResultByGamePhase from "../components/widgets/ResultsByGamePhase";
 
 export interface InsightsFilterState {
   date: string;
@@ -59,6 +60,9 @@ export default function Insights() {
         <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid item xs={12} md={6}>
             <WinRateByColor games={filteredGames} isLoading={isLoadingGames} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ResultByGamePhase games={filteredGames} isLoading={isLoadingGames} />
           </Grid>
           <Grid item xs={12} md={6}>
             <ResultsByOpponentRating

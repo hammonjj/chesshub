@@ -66,6 +66,12 @@ export interface Game {
   uuid?: string;
   opponentElo: number;
   playerElo: number;
+  metadata?: GameMetadata;
+}
+
+export interface GameMetadata {
+  endingFen: string;
+  endingPhase: string;
 }
 
 export interface StockfishAnalysisResult {
